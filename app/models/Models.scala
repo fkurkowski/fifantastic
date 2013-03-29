@@ -64,7 +64,7 @@ object Player {
 		Record.update(id, player.record)
 	}
 
-	def create(name: String): Player = {
+	def create(name: String): Long = {
 		val id = DB.withConnection { implicit connection => 
 			SQL(
 				"""
@@ -74,7 +74,8 @@ object Player {
 			).on('name -> name).executeInsert().get
 		}
 
-		Player(Id(id), name, Record.create(id))
+		Record.create(id)
+		id
 	}
 }
 
@@ -130,8 +131,8 @@ object Record {
 		}
 	}
 
-	def create(playerId: Long): Record = {
-		val id = DB.withConnection { implicit connection => 
+	def create(playerId: Long): Long = {
+		DB.withConnection { implicit connection => 
 			SQL(
 				"""
 					insert into record(wins, draws, losses, goals_scored, 
@@ -140,8 +141,6 @@ object Record {
 				"""
 			).on('player_id -> playerId).executeInsert().get
 		}
-
-		Record(Id(id), 0, 0, 0, 0, 0)
 	}
 }
 
@@ -183,8 +182,8 @@ object Team {
 		}
 	}
 
-	def create(name: String): Team = {
-		val id = DB.withConnection { implicit connection => 
+	def create(name: String): Long = {
+		DB.withConnection { implicit connection => 
 			SQL(
 				"""
 					insert into team(name) 
@@ -192,8 +191,6 @@ object Team {
 				"""
 			).on('name -> name).executeInsert().get
 		}
-
-		Team(Id(id), name)
 	}
 }
 
@@ -253,6 +250,26 @@ object Match {
 	def findAll: List[Match] = {
 		DB.withConnection { implicit connection =>
 			SQL("select * from match").as(Match.parser *)
+		}
+	}
+
+	def create(hp: Long, ht: Long, hg: Int, ap: Long, 
+		at: Long, ag: Int): Long = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					insert into match(home_player_id, home_team_id,
+						home_goals, away_player_id, away_team_id, away_goals)
+					values({hp}, {ht}, {hg}, {ap}, {at}, {ag})
+				"""
+			).on(
+				'hp -> hp,
+				'ht -> ht,
+				'hg -> hg,
+				'ap -> ap,
+				'at -> at,
+				'ag -> ag
+			).executeInsert().get
 		}
 	}
 	

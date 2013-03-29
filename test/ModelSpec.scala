@@ -38,9 +38,9 @@ class ModelSpec extends Specification {
 
 			"be created" in {
 				running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-					val created = Player.create("Felipe Kurkowski")
+					val id = Player.create("Felipe Kurkowski")
 
-					val Some(player) = Player.findById(created.id.get)
+					val Some(player) = Player.findById(id)
 					player.name must_== "Felipe Kurkowski"
 					player.record.wins must_== 0
 				}
@@ -102,9 +102,9 @@ class ModelSpec extends Specification {
 
 		"be created" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				val created = Team.create("Barcelona")
+				val id = Team.create("Barcelona")
 
-				val Some(team) = Team.findById(created.id.get)
+				val Some(team) = Team.findById(id)
 				team.name must_== "Barcelona"
 			}
 		}
@@ -143,6 +143,20 @@ class ModelSpec extends Specification {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val games = Match.findAll
 				games.size must_== 3
+			}
+		}
+
+		"be created" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val id = Match.create(2, 2, 0, 1, 2, 0)
+
+				val Some(game) = Match.findById(id)
+				game.home.player.name must_== "Alfonso Ramos Cuevas"
+				game.home.team.name must_== "Manchester City"
+				game.home.goals must_== 0
+				game.away.player.name must_== "Bruce Grannec"
+				game.away.team.name must_== "Manchester City"
+				game.away.goals must_== 0
 			}
 		}
 	}
