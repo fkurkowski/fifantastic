@@ -36,19 +36,21 @@ object Record {
 
 	def update(id: Long, record: Record) = {
 		DB.withConnection { implicit connection =>
-			SQL("""
-          		update record
-          		set wins = {wins}, draws = {draws}, losses = {losses}, 
-          			goals_scored = {goals_scored}, goals_conceded = {goals_conceded}
-          		where id = {id}
-        		""")
-			.on('id -> id,
-        		'wins -> record.wins,
-        		'draws -> record.draws,
-        		'losses -> record.losses,
-        		'goals_scored -> record.goalsScored,
-        		'goals_conceded -> record.goalsConceded)
-			.executeUpdate()
+			SQL(
+				"""
+					update record
+					set wins = {wins}, draws = {draws}, losses = {losses}, 
+					goals_scored = {goals_scored}, goals_conceded = {goals_conceded}
+					where id = {id}
+				"""
+			).on(
+				'id -> id, 
+				'wins -> record.wins,
+				'draws -> record.draws,
+				'losses -> record.losses,
+				'goals_scored -> record.goalsScored,
+				'goals_conceded -> record.goalsConceded
+			).executeUpdate()
 		}
 	}
 }
