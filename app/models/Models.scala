@@ -6,6 +6,8 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
+import scala.language.postfixOps
+
 case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record)
 case class Team(id: Pk[Long] = NotAssigned, name: String)
 case class Match(id: Pk[Long] = NotAssigned, home: PlayerScore, away: PlayerScore)
@@ -14,19 +16,35 @@ case class Record(id: Pk[Long] = NotAssigned, wins: Int, draws: Int, losses: Int
 	goalsScored: Int, goalsConceded: Int)
 
 object Player {
-	val parser = {
+	val withRecord = {
 		get[Pk[Long]]("player.id") ~
-		get[String]("player.name") map {
-			case id~name => Player(id, name, Record.findByPlayerId(id.get).get)
+		get[String]("player.name") ~
+		Record.parser map {
+			case id~name~record => Player(id, name, record)
 		}
 	}
 
 	def findById(id: Long): Option[Player] = {
 		DB.withConnection { implicit connection =>
-			SQL("select * from player where id = {id}")
-				.on('id -> id)
-				.as(Player.parser.singleOpt)
+			SQL(
+				"""
+					select * from player 
+					left join record on player.id = record.player_id 
+					where player.id = {id}
+				"""
+			).on('id -> id).as(Player.withRecord.singleOpt)
 		}	
+	}
+
+	def findAll: List[Player] = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					select * from player
+					left join record on player.id = record.player_id
+				"""
+			).as(Player.withRecord *)
+		}
 	}
 
 	def update(id: Long, player: Player) = {
@@ -60,6 +78,9 @@ object Player {
 	}
 }
 
+/** 
+ * TODO: Apparently, there's no need to keep this in a separate table.
+ */
 object Record {
 	val parser = {
 		get[Pk[Long]]("record.id") ~
@@ -140,6 +161,13 @@ object Team {
 		}	
 	}
 
+	def findAll: List[Team] = {
+		DB.withConnection { implicit connection =>
+			SQL("select * from team")
+				.as(Team.parser *)
+		}
+	}
+
 	def update(id: Long, team: Team) = {
 		DB.withConnection { implicit connection =>
 			SQL(
@@ -167,5 +195,66 @@ object Team {
 
 		Team(Id(id), name)
 	}
+}
+
+object Match {
+
+	val parser = {
+		get[Pk[Long]]("match.id") ~
+		get[Long]("match.home_player_id") ~
+		get[Long]("match.home_team_id") ~
+		get[Int]("match.home_goals") ~
+		get[Long]("match.away_player_id") ~
+		get[Long]("match.away_team_id") ~
+		get[Int]("match.away_goals") map {
+			case id~hpId~htId~homeGoals~apId~atId~awayGoals =>
+				Match(
+					id, 
+					PlayerScore(Player.findById(hpId).get, Team.findById(htId).get, homeGoals),
+					PlayerScore(Player.findById(apId).get, Team.findById(atId).get, awayGoals)
+				)
+		}
+	}
+
+	def findById(id: Long): Option[Match] = {
+		DB.withConnection { implicit connection =>
+			SQL(
+				"""
+					select * from match
+					where id = {id}
+				"""
+			).on('id -> id).as(Match.parser.singleOpt)
+		}
+	}
+
+	def findByPlayerId(id: Long): List[Match] = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					select * from match
+					where home_player_id = {id} OR away_player_id = {id}
+				"""
+			).on('id -> id).as(Match.parser *)
+		}
+	}
+
+	def findByTeamId(id: Long): List[Match] = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					select * from match
+					where (home_team_id <> away_team_id)
+						AND (home_team_id = {id} OR away_team_id = {id})
+				"""
+			).on('id -> id).as(Match.parser *)
+		}
+	}
+
+	def findAll: List[Match] = {
+		DB.withConnection { implicit connection =>
+			SQL("select * from match").as(Match.parser *)
+		}
+	}
+	
 }
 
