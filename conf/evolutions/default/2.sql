@@ -2,7 +2,7 @@
 
 # --- !Ups
 insert into player values (1, 'Bruce Grannec');
-insert into player values (2, 'Alfonso Ramos Cuevas');
+insert into player values (2, 'Alfonso Ramos');
 
 insert into record values (1, 82, 11, 4, 192, 68, 1);
 

@@ -1,0 +1,26 @@
+@(game: Form[Match])
+
+@import helper._
+
+@main {
+	<div class="hero-unit">
+		<h1>Game on!</h1>
+
+		<div>
+			<p>Please complete the form below</p>
+		</div>
+	</div>
+
+	<div>
+		@helper.form(routes.Game.save) {
+	    <fieldset>
+	    </fieldset>
+	    
+	    <div class="actions">
+	        <input type="submit" value="Create" class="btn btn-primary btn-large">
+	        <a href="@routes.Game.list()" class="btn btn-warning btn-large">Cancel</a> 
+	    </div>
+
+    }
+	</div>
+}

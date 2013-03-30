@@ -1,0 +1,41 @@
+@(matches: List[Match])
+
+@****************************************
+* Match creation helper							    *
+****************************************@
+@create(m: Match) = {
+	<div class="game">
+		<div class="row">
+			<div class="span5 player text-right">
+				<h3>@m.home.player.name</h3>
+				<small><em>as</em> @m.home.team.name</small>
+			</div>
+
+			<div class="span2 player text-center">
+				<h1>@m.home.goals x @m.away.goals</h1>
+				<small>19th July 2013</small>
+			</div>
+
+			<div class="span5 player text-left">
+				<h3>@m.away.player.name</h3>
+				<small><em>as</em> @m.away.team.name</small>
+			</div>
+		</div>
+	</div>
+}
+
+@main {
+	<div class="hero-unit">
+		<h1>Fixtures</h1>
+
+		<div>
+			<p>Please choose:</p>
+			<a class="btn btn-primary btn-large" href="@routes.Game.form"><i class="icon-play icon-white"></i> New</a>
+			<a class="btn btn-primary btn-large" href="@routes.Game.random"><i class="icon-star icon-white"></i> Memorable</a>
+		</div>
+	</div>
+
+	<div>
+		@matches.map(create)
+	</div>
+}

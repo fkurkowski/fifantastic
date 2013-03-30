@@ -47,6 +47,18 @@ object Player {
 		}
 	}
 
+	def findByName(name: String): Option[Player] = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					select * from player
+					left join record on player.id = record.player_id
+					where name = {name}
+				"""
+			).on('name -> name).as(Player.withRecord.singleOpt)
+		}
+	}
+
 	def update(id: Long, player: Player) = {
 		DB.withConnection { implicit connection =>
 			SQL(
@@ -167,6 +179,17 @@ object Team {
 		}
 	}
 
+	def findByName(name: String): Option[Team] = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					select * from team
+					where name = {name}
+				"""
+			).on('name -> name).as(Team.parser.singleOpt)
+		}
+	}
+
 	def update(id: Long, team: Team) = {
 		DB.withConnection { implicit connection =>
 			SQL(
@@ -252,6 +275,9 @@ object Match {
 			SQL("select * from match").as(Match.parser *)
 		}
 	}
+
+	def create(game: Match): Long = create(game.home.player.id.get, game.home.team.id.get, game.home.goals,
+			game.away.player.id.get, game.away.team.id.get, game.away.goals)
 
 	def create(hp: Long, ht: Long, hg: Int, ap: Long, 
 		at: Long, ag: Int): Long = {

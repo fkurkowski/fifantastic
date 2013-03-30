@@ -17,6 +17,13 @@ class ModelSpec extends Specification {
 				}
 			}
 
+			"be found by name" in {
+				running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+					val Some(player) = Player.findByName("Bruce Grannec")
+					player.name must_== "Bruce Grannec"
+				}	
+			}
+
 			"find all" in {
 				running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 					val all = Player.findAll
@@ -84,6 +91,13 @@ class ModelSpec extends Specification {
 			}
 		}
 
+		"be found by name" in {
+				running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+					val Some(team) = Team.findByName("Real Madrid")
+					team.name must_== "Real Madrid"
+				}	
+			}
+
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val all = Team.findAll
@@ -118,7 +132,7 @@ class ModelSpec extends Specification {
 				game.home.player.name must_== "Bruce Grannec"
 				game.home.team.name must_== "Real Madrid"
 				game.home.goals must_== 2
-				game.away.player.name must_== "Alfonso Ramos Cuevas"
+				game.away.player.name must_== "Alfonso Ramos"
 				game.away.team.name must_== "Manchester City"
 				game.away.goals must_== 2
 			}
@@ -151,7 +165,7 @@ class ModelSpec extends Specification {
 				val id = Match.create(2, 2, 0, 1, 2, 0)
 
 				val Some(game) = Match.findById(id)
-				game.home.player.name must_== "Alfonso Ramos Cuevas"
+				game.home.player.name must_== "Alfonso Ramos"
 				game.home.team.name must_== "Manchester City"
 				game.home.goals must_== 0
 				game.away.player.name must_== "Bruce Grannec"
