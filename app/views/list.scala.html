@@ -1,4 +1,4 @@
-@(matches: List[Match])
+@(matches: List[Match])(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Match creation helper							    *
@@ -13,7 +13,7 @@
 
 			<div class="span2 player text-center">
 				<h1>@m.home.goals x @m.away.goals</h1>
-				<small>19th July 2013</small>
+				<small>June 19, 2013</small>
 			</div>
 
 			<div class="span5 player text-left">
@@ -34,6 +34,14 @@
 			<a class="btn btn-primary btn-large" href="@routes.Game.random"><i class="icon-star icon-white"></i> Memorable</a>
 		</div>
 	</div>
+
+	@flash.get("success").map { message =>
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Done!</h4>
+  		@message
+    </div>
+  }
 
 	<div>
 		@matches.map(create)

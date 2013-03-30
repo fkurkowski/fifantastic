@@ -1,4 +1,4 @@
-@(game: Form[Match])
+@(game: Form[Match], players: String, teams: String)
 
 @import helper._
 
@@ -14,13 +14,38 @@
 	<div>
 		@helper.form(routes.Game.save) {
 	    <fieldset>
+
+	    	<div>
+	    			<div class="names">
+	    				<input class="" type="text" placeholder="Player" name="home_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
+	    				<input class="" type="text" placeholder="Team" name="home_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
+	    			</div>
+
+	    			<div class="score">
+	    				<input type="text" name="home_goals"/>
+	    			</div>
+
+	    			<div class="versus">
+	    				<h4>x</h4>
+	    			</div>
+
+	    			<div class="score">
+	    				<input type="text" name="away_goals"/>
+	    			</div>
+
+	    			<div class="names">
+	    				<input class="" type="text" placeholder="Player" name="away_player_name" data-provide="typeahead" autocomplete="off" data-source="@players">
+	    				<input class="" type="text" placeholder="Team" name="away_team_name" data-provide="typeahead" autocomplete="off" data-source="@teams"/>
+	    			</div>
+	    		</div>
+	    	</div>
+	    	
 	    </fieldset>
 	    
-	    <div class="actions">
-	        <input type="submit" value="Create" class="btn btn-primary btn-large">
-	        <a href="@routes.Game.list()" class="btn btn-warning btn-large">Cancel</a> 
+	    <div class="actions pull-right">
+	        <input type="submit" value="Create" class="btn btn-primary">
+	        <a href="@routes.Game.list()" class="btn btn-info">Cancel</a> 
 	    </div>
-
     }
 	</div>
 }

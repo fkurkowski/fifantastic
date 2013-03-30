@@ -87,21 +87,21 @@ class ModelSpec extends Specification {
 		"be found by id" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val Some(team) = Team.findById(1)
-				team.name must_== "Real Madrid"
+				team.name must startWith("Real Madrid")
 			}
 		}
 
 		"be found by name" in {
 				running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-					val Some(team) = Team.findByName("Real Madrid")
-					team.name must_== "Real Madrid"
+					val Some(team) = Team.findByName("FC Barcelona")
+					team.name must_== "FC Barcelona"
 				}	
 			}
 
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val all = Team.findAll
-				all.size must_== 2
+				all.size must_== 574
 			}
 		}
 
@@ -130,10 +130,10 @@ class ModelSpec extends Specification {
 				val Some(game) = Match.findById(1)
 				
 				game.home.player.name must_== "Bruce Grannec"
-				game.home.team.name must_== "Real Madrid"
+				game.home.team.name must startWith("Real Madrid")
 				game.home.goals must_== 2
 				game.away.player.name must_== "Alfonso Ramos"
-				game.away.team.name must_== "Manchester City"
+				game.away.team.name must startWith("FC Barcelona")
 				game.away.goals must_== 2
 			}
 		}
@@ -166,10 +166,10 @@ class ModelSpec extends Specification {
 
 				val Some(game) = Match.findById(id)
 				game.home.player.name must_== "Alfonso Ramos"
-				game.home.team.name must_== "Manchester City"
+				game.home.team.name must startWith("FC Barcelona")
 				game.home.goals must_== 0
 				game.away.player.name must_== "Bruce Grannec"
-				game.away.team.name must_== "Manchester City"
+				game.away.team.name must startWith("FC Barcelona")
 				game.away.goals must_== 0
 			}
 		}

@@ -6,7 +6,6 @@ import play.api.data._
 import play.api.data.Forms._
 
 import anorm._
-
 import models._
 
 object Game extends Controller {
@@ -27,7 +26,7 @@ object Game extends Controller {
 
 	val index = Redirect(routes.Game.list)
 
-	def list = Action {
+	def list = Action { implicit request =>
   	Ok(views.html.list(Match.findAll))
   }
 
@@ -35,15 +34,19 @@ object Game extends Controller {
 
   def save = Action { implicit request =>
   	gameForm.bindFromRequest.fold(
-  		formWithErrors => BadRequest(views.html.form(formWithErrors)),
+  		formWithErrors => BadRequest(views.html.form(formWithErrors, playersAsString, teamsAsString)),
   		game => {
   			Match.create(game)
-  			index
+  			index.flashing("success" -> "Match has been added")
   		}
   	)
   }
 
   def form = Action {
-  	Ok(views.html.form(gameForm))
+  	Ok(views.html.form(gameForm, playersAsString, teamsAsString))
   }
+
+  def asJSArray(list: List[String]) = "[\"" + list.mkString("\", \"") + "\"]"
+  def playersAsString = asJSArray(Player.findAll.map(_.name))
+  def teamsAsString = asJSArray(Team.findAll.map(_.name))
 }

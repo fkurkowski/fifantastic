@@ -16,7 +16,39 @@
 	margin-bottom: 0px;
 }
 
-.match-input {
-	margin-bottom: 5px;
-	margin-top: 5px;
+.score {
+	float: left;
+	height: 100px;
+	padding-left: 20px
+}
+
+.score input[type="text"] {
+	height: 80px;
+	width: 50px;
+	font-size: 50px;
+	padding-right: 0px;
+	padding-left: 20px;
+}
+
+.names {
+	float: left;
+	height: 100px;
+	width: 352px;
+}
+
+.names:last-child {
+	padding-left: 20px;
+}
+
+.names input[type="text"] {
+	width: 338px;
+	height: 30px;
+	font-size: 18px;
+}
+
+.versus {
+	margin-top: 60px;
+	margin-left: 20px;
+	width: 10px;
+	float: left;
 }

@@ -3,8 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET 		/rankings										controllers.Application.rankings
+GET     /                           controllers.Game.list
 
 GET 		/games											controllers.Game.list
 GET     /games/new									controllers.Game.form
