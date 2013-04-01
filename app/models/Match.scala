@@ -9,8 +9,14 @@ import anorm.SqlParser._
 
 import scala.language.postfixOps
 
+case class Match(id: Pk[Long] = NotAssigned, date: Date, home: PlayerScore, away: PlayerScore) {
+	def winner: Option[Player] = {
+		if (home.goals > away.goals) Some(home.player)
+		else if (home.goals < away.goals) Some(away.player)
+		else None
+	}
+}
 
-case class Match(id: Pk[Long] = NotAssigned, date: Date, home: PlayerScore, away: PlayerScore)
 case class PlayerScore(player: Player, team: Team, goals: Int)
 
 
@@ -70,7 +76,12 @@ object Match {
 
 	def findAll: List[Match] = {
 		DB.withConnection { implicit connection =>
-			SQL("select * from match").as(Match.parser *)
+			SQL(
+				"""
+					select * from match
+					order by when desc
+				"""
+			).as(Match.parser *)
 		}
 	}
 

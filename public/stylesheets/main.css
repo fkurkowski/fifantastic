@@ -1,11 +1,11 @@
 .game {
 	padding-bottom: 20px;
 	padding-top: 10px;
-	border-bottom: 1px solid #eeeeee;
+	border-top: 1px solid #eeeeee;
 }
 
-.game:last-child {
-	border-bottom: none;
+.game:first-child {
+	border-style: none;
 }
 
 .player h3 {

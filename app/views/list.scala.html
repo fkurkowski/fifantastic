@@ -7,7 +7,7 @@
 	<div class="game">
 		<div class="row">
 			<div class="span5 player text-right">
-				<h3>@m.home.player.name</h3>
+				<h3 class="@playerClass(m,m.home.player)">@m.home.player.name</h3>
 				<small><em>as</em> @m.home.team.name</small>
 			</div>
 
@@ -17,12 +17,21 @@
 			</div>
 
 			<div class="span5 player text-left">
-				<h3>@m.away.player.name</h3>
+				<h3 class="@playerClass(m,m.away.player)">@m.away.player.name</h3>
 				<small><em>as</em> @m.away.team.name</small>
 			</div>
 		</div>
 	</div>
 }
+
+@playerClass(m: Match, p: Player) = @{
+	m.winner match {
+		case None => "text-warning" 
+		case Some(winner) if winner == p => "text-success"
+		case _ => "text-error"
+	}
+}
+
 
 @main {
 	<div class="hero-unit">
@@ -43,7 +52,19 @@
     </div>
   }
 
-	<div class="container">
+	<div class="container games">
 		@matches.map(create)
+
+		<div class="pagination text-center">
+  		<ul>
+    		<li><a href="#">Prev</a></li>
+    		<li><a href="#">1</a></li>
+    		<li><a href="#">2</a></li>
+    		<li><a href="#">3</a></li>
+    		<li><a href="#">4</a></li>
+    		<li><a href="#">5</a></li>
+    		<li><a href="#">Next</a></li>
+  		</ul>
+		</div>
 	</div>
 }
