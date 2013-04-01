@@ -583,9 +583,9 @@ insert into team(name) values('United States');
 insert into team(name) values('Uruguay');
 insert into team(name) values('Venezuela');
 
-insert into match values (1, 1, 1, 2, 2, 2, 2);
-insert into match values (2, 1, 2, 1, 2, 1, 0);
-insert into match values (3, 1, 1, 1, 2, 1, 2);
+insert into match values (1, '2013-3-04', 1, 1, 2, 2, 2, 2);
+insert into match values (2, '2013-3-04', 1, 2, 1, 2, 1, 0);
+insert into match values (3, '2013-3-04', 1, 1, 1, 2, 1, 2);
 
 
 # --- !Downs

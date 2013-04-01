@@ -30,6 +30,7 @@ create table team (
 
 create table match (
 	id 									bigint not null auto_increment,
+	when			 					date not null,
 	home_player_id 			bigint not null,
 	home_team_id				bigint not null,
 	home_goals					int not null,

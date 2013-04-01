@@ -13,7 +13,7 @@
 
 			<div class="span2 player text-center">
 				<h1>@m.home.goals x @m.away.goals</h1>
-				<small>June 19, 2013</small>
+				<small>@m.date</small>
 			</div>
 
 			<div class="span5 player text-left">
@@ -43,7 +43,7 @@
     </div>
   }
 
-	<div>
+	<div class="container">
 		@matches.map(create)
 	</div>
 }

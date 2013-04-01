@@ -4,6 +4,7 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import java.util.Date
 
 import anorm._
 import models._
@@ -19,7 +20,7 @@ object Game extends Controller {
       "away_player_name" -> nonEmptyText,
       "away_team_name" -> nonEmptyText,
       "away_goals" -> number
-    )((id, hpn, htn, hg, apn, atn, ag) => Match(id, PlayerScore(Player.findByName(hpn).get, Team.findByName(htn).get, hg), 
+    )((id, hpn, htn, hg, apn, atn, ag) => Match(id, new Date(), PlayerScore(Player.findByName(hpn).get, Team.findByName(htn).get, hg), 
     		PlayerScore(Player.findByName(apn).get, Team.findByName(atn).get, ag)))
      ((game: Match) => Some(game.id, game.home.player.name, game.home.team.name, game.home.goals,
      		game.away.player.name, game.away.team.name, game.away.goals)))
