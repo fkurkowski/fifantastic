@@ -13,7 +13,7 @@
 
 			<div class="span2 player text-center">
 				<h1>@m.home.goals x @m.away.goals</h1>
-				<small>@m.date</small>
+				<small>@formatDate(m.date)</small>
 			</div>
 
 			<div class="span5 player text-left">
@@ -30,6 +30,11 @@
 		case Some(winner) if winner == p => "text-success"
 		case _ => "text-error"
 	}
+}
+
+@formatDate(dt: java.util.Date) = @{
+	val format = new java.text.SimpleDateFormat("MMM dd, yyyy")
+	format.format(dt)
 }
 
 

@@ -16,39 +16,42 @@
 	margin-bottom: 0px;
 }
 
-.score {
+.versus {
+	margin-top: 121px;
+	margin-left: 20px;
+	margin-right: 20px;
+	width: 10px;
 	float: left;
-	height: 100px;
-	padding-left: 20px
 }
 
-.score input[type="text"] {
-	height: 80px;
-	width: 50px;
-	font-size: 50px;
-	padding-right: 0px;
-	padding-left: 20px;
-}
-
-.names {
+.sc-info {
 	float: left;
-	height: 100px;
-	width: 352px;
+	width: 353px;
 }
 
-.names:last-child {
-	padding-left: 20px;
-}
-
-.names input[type="text"] {
+.sc-info input[type="text"] {
 	width: 338px;
 	height: 30px;
 	font-size: 18px;
 }
 
-.versus {
-	margin-top: 60px;
-	margin-left: 20px;
-	width: 10px;
+.sc-score {
 	float: left;
+	height: 80px;
+	padding-right: 20px;
+	padding-left: 0px;
 }
+
+.sc-score:last-child {
+	padding-left: 20px;
+	padding-right: 0px;
+}
+
+.sc-score input[type="text"] {
+	height: 80px;
+	width: 50px;
+	font-size: 50px;
+	padding-left: 20px;
+	padding-right: 0px;
+}
+

@@ -16,11 +16,43 @@
 	    <fieldset>
 
 	    	<div>
-	    			<div class="names">
-	    				<input class="" type="text" placeholder="Player" name="home_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
-	    				<input class="" type="text" placeholder="Team" name="home_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
-	    			</div>
+	    		<div class="pull-left">
+	    			<legend>Home</legend>
 
+	    			<span class="sc-info">
+	    				<input class="" type="text" placeholder="Player" name="home_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
+    					<input class="" type="text" placeholder="Team" name="home_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
+	    			</span>
+
+	    			<span class="sc-score">
+	    				<input type="text" name="home_goals"/>
+	    			</span>
+	    		</div>
+
+	    		<div class="versus pull-left">
+	    				<h4>x</h4>
+	    		</div>
+
+	    		<div class="pull-left">
+	    			<legend class="text-right">Away</legend>
+
+						<span class="sc-score">
+	    				<input type="text" name="away_goals"/>
+	    			</span>
+
+	    			<span class="sc-info">
+	    				<input class="" type="text" placeholder="Player" name="away_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
+    					<input class="" type="text" placeholder="Team" name="away_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
+	    			</span>
+	    		</div>
+
+    			<!--<div class="names">
+    				<legend>Home</legend>
+    				<input class="" type="text" placeholder="Player" name="home_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
+    				<input class="" type="text" placeholder="Team" name="home_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
+    			</div>
+
+    			<div class="result">
 	    			<div class="score">
 	    				<input type="text" name="home_goals"/>
 	    			</div>
@@ -32,12 +64,13 @@
 	    			<div class="score">
 	    				<input type="text" name="away_goals"/>
 	    			</div>
-
-	    			<div class="names">
-	    				<input class="" type="text" placeholder="Player" name="away_player_name" data-provide="typeahead" autocomplete="off" data-source="@players">
-	    				<input class="" type="text" placeholder="Team" name="away_team_name" data-provide="typeahead" autocomplete="off" data-source="@teams"/>
-	    			</div>
 	    		</div>
+
+    			<div class="names">
+    				<legend class="text-right">Away</legend>
+    				<input class="" type="text" placeholder="Player" name="away_player_name" data-provide="typeahead" autocomplete="off" data-source="@players">
+    				<input class="" type="text" placeholder="Team" name="away_team_name" data-provide="typeahead" autocomplete="off" data-source="@teams"/>
+    			</div>-->
 	    	</div>
 	    	
 	    </fieldset>
