@@ -27,7 +27,7 @@ class PlayerSpec extends Specification {
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val all = Player.findAll
-				all.size must_== 2
+				all.size must_== 10
 			}
 		}
 

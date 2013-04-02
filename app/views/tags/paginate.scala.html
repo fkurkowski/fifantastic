@@ -1,0 +1,37 @@
+@(page: Page[Any], numLinks: Int, route: Int => play.api.mvc.Call)
+
+@link(actual: Option[Int], title: Option[String] = None) = {
+	@actual match { 
+		case None => { <li class="disabled"><a>@title.get</a></li> }
+		case Some(n) if n == page.page => {
+			<li class="active"><a href="@route(n)">@title.getOrElse(actual.get)</a></li>
+		}
+		case Some(n) => {
+			<li><a href="@route(n)">@title.getOrElse(actual.get)</a></li>
+		}
+	}
+}
+
+@links(from: Int) = {
+	@for(p <- from until from + numLinks) {
+		@link(Some(p))
+	}
+}
+
+<div class="pagination text-center">
+	<ul>
+		@link(page.prev, Some("Prev"))
+
+		@if(page.page <= (numLinks / 2) + 1) {
+			@links(page.first)
+		}	else {
+			@if(page.page > page.last - (numLinks / 2)) {
+				@links(page.last - numLinks + 1)
+			} else {
+				@links(page.page - (numLinks / 2))
+			}
+		}
+		
+		@link(page.next, Some("Next"))
+	</ul>
+</div>

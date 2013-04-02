@@ -1,4 +1,6 @@
-@(matches: List[Match])(implicit flash: play.api.mvc.Flash)
+@(matches: Page[Match])(implicit flash: play.api.mvc.Flash)
+
+@import tags._
 
 @****************************************
 * Match creation helper							    *
@@ -37,7 +39,6 @@
 	format.format(dt)
 }
 
-
 @main {
 	<div class="hero-unit">
 		<h1>Fixtures</h1>
@@ -57,19 +58,11 @@
     </div>
   }
 
-	<div class="container games">
-		@matches.map(create)
-
-		<div class="pagination text-center">
-  		<ul>
-    		<li><a href="#">Prev</a></li>
-    		<li><a href="#">1</a></li>
-    		<li><a href="#">2</a></li>
-    		<li><a href="#">3</a></li>
-    		<li><a href="#">4</a></li>
-    		<li><a href="#">5</a></li>
-    		<li><a href="#">Next</a></li>
-  		</ul>
+	<div class="container">
+		<div>
+			@matches.items.map(create)
 		</div>
+
+		@paginate(matches, 9, routes.Game.list _)
 	</div>
 }

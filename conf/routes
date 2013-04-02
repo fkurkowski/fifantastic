@@ -3,9 +3,9 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Game.list
+GET     /                           controllers.Game.index
 
-GET 		/games											controllers.Game.list
+GET 		/games											controllers.Game.list(page: Int ?= 1)
 GET     /games/new									controllers.Game.form
 POST    /games               		   	controllers.Game.save
 GET     /games/random								controllers.Game.random

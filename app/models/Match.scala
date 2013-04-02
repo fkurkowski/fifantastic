@@ -19,7 +19,6 @@ case class Match(id: Pk[Long] = NotAssigned, date: Date, home: PlayerScore, away
 
 case class PlayerScore(player: Player, team: Team, goals: Int)
 
-
 object Match {
 
 	val parser = {
@@ -71,6 +70,32 @@ object Match {
 						AND (home_team_id = {id} OR away_team_id = {id})
 				"""
 			).on('id -> id).as(Match.parser *)
+		}
+	}
+
+	def findByPage(page: Int = 1, pageSize: Int = 5): Page[Match] = {
+
+		val offset = pageSize * (page - 1)
+
+		DB.withConnection { implicit connection =>
+			val games = SQL(
+				"""
+					select * from match
+					order by when desc
+					limit {pageSize} offset {offset}
+				"""
+			).on(
+				'pageSize -> pageSize,
+				'offset -> offset
+			).as(Match.parser *)
+
+			val total = SQL(
+				"""
+					select count(*) from match
+				"""
+			).as(scalar[Long].single)
+
+			Page(games, page, pageSize, offset, total)
 		}
 	}
 

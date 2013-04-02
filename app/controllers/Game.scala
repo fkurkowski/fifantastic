@@ -25,20 +25,22 @@ object Game extends Controller {
      ((game: Match) => Some(game.id, game.home.player.name, game.home.team.name, game.home.goals,
      		game.away.player.name, game.away.team.name, game.away.goals)))
 
-	val index = Redirect(routes.Game.list)
+  val main = Redirect(routes.Game.list())
 
-	def list = Action { implicit request =>
-  	Ok(views.html.list(Match.findAll))
+	def index = list()
+
+	def list(page: Int = 1) = Action { implicit request =>
+  	Ok(views.html.list(Match.findByPage(page)))
   }
 
-  def random = list
+  def random = list()
 
   def save = Action { implicit request =>
   	gameForm.bindFromRequest.fold(
   		formWithErrors => BadRequest(views.html.form(formWithErrors, playersAsString, teamsAsString)),
   		game => {
   			Match.create(game)
-  			index.flashing("success" -> "Match has been added")
+  			main.flashing("success" -> "Match has been added")
   		}
   	)
   }
