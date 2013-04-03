@@ -18,11 +18,18 @@ class TeamSpec extends Specification {
 		}
 
 		"be found by name" in {
-				running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-					val Some(team) = Team.findByName("FC Barcelona")
-					team.name must_== "FC Barcelona"
-				}	
-			}
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val Some(team) = Team.findByName("FC Barcelona")
+				team.name must_== "FC Barcelona"
+			}	
+		}
+
+		"be found by name like" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val teams = Team.findByNameLike("%Barcelona%")
+				teams.size must_== 3
+			}	
+		}
 
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {

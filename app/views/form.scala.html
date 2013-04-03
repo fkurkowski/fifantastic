@@ -1,6 +1,7 @@
-@(game: Form[Match], players: String, teams: String)
+@(game: Form[Match])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @main {
 	<div class="hero-unit">
@@ -11,21 +12,35 @@
 		</div>
 	</div>
 
+	@if(game.hasErrors) {
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+  		<h4>Oops, there's something wrong!</h4>
+
+  		@for(byKey <- game.errors.groupBy(_.key)) {
+  			<p>
+  				@Messages(byKey._1):
+  				@byKey._2.map(x => Messages(x.message).toLowerCase).mkString(", ")
+  			</p>
+  		}
+
+    </div>
+  }
+
 	<div>
 		@helper.form(routes.Game.save) {
 	    <fieldset>
-
 	    	<div>
 	    		<div class="pull-left">
 	    			<legend>Home</legend>
 
 	    			<span class="sc-info">
-	    				<input class="" type="text" placeholder="Player" name="home_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
-    					<input class="" type="text" placeholder="Team" name="home_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
+	    				@typeahead(game("game.home.player"), 'placeholder -> "Player", 'source -> routes.PlayerController.names())
+    					@typeahead(game("game.home.team"), 'placeholder -> "Team", 'source -> routes.TeamController.names())
 	    			</span>
 
 	    			<span class="sc-score">
-	    				<input type="text" name="home_goals"/>
+	    				@simpleText(game("game.home.goals"))
 	    			</span>
 	    		</div>
 
@@ -37,42 +52,15 @@
 	    			<legend class="text-right">Away</legend>
 
 						<span class="sc-score">
-	    				<input type="text" name="away_goals"/>
+	    				@simpleText(game("game.away.goals"))
 	    			</span>
 
 	    			<span class="sc-info">
-	    				<input class="" type="text" placeholder="Player" name="away_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
-    					<input class="" type="text" placeholder="Team" name="away_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
+	    				@typeahead(game("game.away.player"), 'placeholder -> "Player", 'source -> routes.PlayerController.names())
+	    				@typeahead(game("game.away.team"), 'placeholder -> "Team", 'source -> routes.TeamController.names())
 	    			</span>
 	    		</div>
-
-    			<!--<div class="names">
-    				<legend>Home</legend>
-    				<input class="" type="text" placeholder="Player" name="home_player_name" data-type="player" data-provide="typeahead" data-source="@players" autocomplete="off">
-    				<input class="" type="text" placeholder="Team" name="home_team_name" data-type="team" data-provide="typeahead" data-source="@teams" autocomplete="off"/>
-    			</div>
-
-    			<div class="result">
-	    			<div class="score">
-	    				<input type="text" name="home_goals"/>
-	    			</div>
-
-	    			<div class="versus">
-	    				<h4>x</h4>
-	    			</div>
-
-	    			<div class="score">
-	    				<input type="text" name="away_goals"/>
-	    			</div>
-	    		</div>
-
-    			<div class="names">
-    				<legend class="text-right">Away</legend>
-    				<input class="" type="text" placeholder="Player" name="away_player_name" data-provide="typeahead" autocomplete="off" data-source="@players">
-    				<input class="" type="text" placeholder="Team" name="away_team_name" data-provide="typeahead" autocomplete="off" data-source="@teams"/>
-    			</div>-->
 	    	</div>
-	    	
 	    </fieldset>
 	    
 	    <div class="actions pull-right">

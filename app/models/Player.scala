@@ -56,6 +56,18 @@ object Player {
 		}
 	}
 
+	def findByNameLike(filter: String): List[Player] = {
+		DB.withConnection { implicit connection =>
+			SQL(
+				"""
+					select * from player
+					left join record on player.id = record.player_id
+					where name like {filter}
+				"""
+			).on('filter -> filter).as(Player.withRecord *)
+		}
+	}
+
 	def update(id: Long, player: Player) = {
 		DB.withConnection { implicit connection =>
 			SQL(

@@ -1,0 +1,13 @@
+# Messages
+
+game.home.player=Home player
+game.home.team=Home team
+game.home.goals=Home goals
+
+game.away.player=Away player
+game.away.team=Away team
+game.away.goals=Away goals
+
+entity.not.found=Entity not found
+player.different=Players must be different
+game=Game

@@ -24,6 +24,13 @@ class PlayerSpec extends Specification {
 			}	
 		}
 
+		"be found by name like" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val players = Player.findByNameLike("%Ovi%")
+				players.size must_== 1
+			}	
+		}
+
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val all = Player.findAll

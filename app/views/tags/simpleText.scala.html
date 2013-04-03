@@ -1,0 +1,8 @@
+@(field: play.api.data.Field, args: (Symbol,Any)*)
+
+@import helper._
+@id = @{ args.toMap.get('id).map(_.toString).getOrElse(field.id) }
+@htmlArgs = @{ args.filter(arg => !arg._1.name.startsWith("_") && arg._1 != 'id).toMap }
+<div class="control-group @if(field.hasErrors) { error }">
+	<input type="text" id="@id" name="@field.name" value="@field.value" @toHtmlArgs(htmlArgs)>
+</div>
