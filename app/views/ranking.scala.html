@@ -1,0 +1,38 @@
+@(players: Page[Player])
+
+@row(player: (Player, Long)) = {
+	<tr>
+		<td>@player._2</td>
+		<td>@player._1.name</td>
+		<td>@player._1.record.wins</td>
+		<td>@player._1.record.draws</td>
+		<td>@player._1.record.losses</td>
+		<td>@player._1.record.goalsScored</td>
+		<td>@player._1.record.goalsConceded</td>
+		<td>@player._1.record.percent</td>
+	</tr>
+}
+
+@main {
+	<div class="hero-unit">
+		<h1>Ranking</h1>
+	</div>	
+
+	<table class="table table-bordered">
+	  <thead>
+	    <tr>
+	      <th>#</th>
+	      <th>Player</th>
+	      <th>W</th>
+	      <th>D</th>
+	      <th>L</th>
+	      <th>GS</th>
+	      <th>GC</th>
+	      <th>%</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	@players.items.zip(1 + players.offset to players.offset + players.items.size).map(row)
+	  </tbody>
+	</table>
+}

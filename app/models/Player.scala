@@ -10,7 +10,10 @@ import scala.language.postfixOps
 
 case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record)
 case class Record(id: Pk[Long] = NotAssigned, wins: Int, draws: Int, losses: Int, 
-	goalsScored: Int, goalsConceded: Int)
+	goalsScored: Int, goalsConceded: Int) {
+
+	def percent = "%.1f" format (((wins*3 + draws).toDouble / ((wins+draws+losses)*3)) * 100)
+}
 
 object Player {
 	val withRecord = {
@@ -65,6 +68,32 @@ object Player {
 					where name like {filter}
 				"""
 			).on('filter -> filter).as(Player.withRecord *)
+		}
+	}
+
+	def findByPage(page: Int = 1, pageSize: Int = 10): Page[Player] = {
+
+		val offset = pageSize * (page - 1)
+
+		DB.withConnection { implicit connection =>
+			val players = SQL(
+				"""
+					select * from player
+					left join record on player.id = record.player_id
+					limit {pageSize} offset {offset}
+				"""
+			).on(
+				'pageSize -> pageSize,
+				'offset -> offset
+			).as(Player.withRecord *)
+
+			val total = SQL(
+				"""
+					select count(*) from player
+				"""
+			).as(scalar[Long].single)
+
+			Page(players, page, pageSize, offset, total)
 		}
 	}
 

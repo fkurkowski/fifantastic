@@ -31,6 +31,13 @@ class PlayerSpec extends Specification {
 			}	
 		}
 
+		"be found by page" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val players = Player.findByPage()
+				players.items.size must_== 10
+			}		
+		}
+
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val all = Player.findAll

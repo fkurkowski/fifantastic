@@ -11,20 +11,6 @@ import models._
 
 object Game extends Controller {
 
-	/*val gameForm = Form(
-    mapping(
-      "id" -> ignored(NotAssigned:Pk[Long]),
-      "home_player_name" -> nonEmptyText,
-      "home_team_name" -> nonEmptyText,
-      "home_goals" -> number,
-      "away_player_name" -> nonEmptyText,
-      "away_team_name" -> nonEmptyText,
-      "away_goals" -> number
-    )((id, hpn, htn, hg, apn, atn, ag) => Match(id, new Date(), PlayerScore(Player.findByName(hpn).get, Team.findByName(htn).get, hg), 
-    		PlayerScore(Player.findByName(apn).get, Team.findByName(atn).get, ag)))
-     ((game: Match) => Some(game.id, game.home.player.name, game.home.team.name, game.home.goals,
-     		game.away.player.name, game.away.team.name, game.away.goals)))*/
-
   implicit def validate[A](entity: Option[A]): Boolean = entity match {
     case Some(_) => true
     case None => false

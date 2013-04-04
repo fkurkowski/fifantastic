@@ -12,4 +12,8 @@ object PlayerController extends Controller {
 			Player.findByNameLike("%" + filter + "%").map(_.name)
 		))
 	}
+
+	def ranking = Action { implicit request =>
+		Ok(views.html.ranking(Player.findByPage()))
+	}
 }

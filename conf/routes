@@ -12,6 +12,7 @@ GET     /games/random								controllers.Game.random
 
 # Players
 GET			/players/names							controllers.PlayerController.names(query: String ?= "")
+GET			/players/ranking						controllers.PlayerController.ranking()
 
 # Teams
 GET			/teams/names								controllers.TeamController.names(query: String ?= "")
