@@ -78,8 +78,13 @@ object Player {
 		DB.withConnection { implicit connection =>
 			val players = SQL(
 				"""
-					select * from player
+					select *, ISNULL(
+						((wins*3+draws)/NULLIF(((wins+draws+losses)*3.0), 0)),
+						0
+					) as percent
+					from player
 					left join record on player.id = record.player_id
+					order by percent desc
 					limit {pageSize} offset {offset}
 				"""
 			).on(
