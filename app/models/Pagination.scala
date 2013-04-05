@@ -8,5 +8,14 @@ case class Page[+A](items: Seq[A], page: Int, itemsPerPage: Int, offset: Long, t
   lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
 
   def first = 1
-  def last = (total / itemsPerPage).toInt + 1
+  def last: Int = Page.last(total, itemsPerPage)
+}
+
+object Page {
+
+	def last(total: Long, itemsPerPage: Int) = total match {
+		case 0 => 1
+		case n => Math.ceil(total / itemsPerPage.toDouble).toInt
+	}
+	
 }

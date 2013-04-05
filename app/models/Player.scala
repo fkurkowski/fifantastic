@@ -92,13 +92,19 @@ object Player {
 				'offset -> offset
 			).as(Player.withRecord *)
 
-			val total = SQL(
-				"""
-					select count(*) from player
-				"""
-			).as(scalar[Long].single)
+			Page(players, page, pageSize, offset, Player.count)
+		}
+	}
 
-			Page(players, page, pageSize, offset, total)
+	def count(): Long = {
+		DB.withConnection { implicit connection =>
+			val total = SQL(
+					"""
+						select count(*) from player
+					"""
+				).as(scalar[Long].single)
+
+			total
 		}
 	}
 

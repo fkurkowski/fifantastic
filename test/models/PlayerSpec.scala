@@ -45,6 +45,13 @@ class PlayerSpec extends Specification {
 			}
 		}
 
+		"count correctly the number of players" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val sz = Player.count
+				sz must_== 10
+			}
+		}
+
 		"be updated" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				Player.update(1, Player(name = "Bruce 'The Machine' Grannec", 

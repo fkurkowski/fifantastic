@@ -1,5 +1,7 @@
 @(players: Page[Player])
 
+@import tags._
+
 @row(player: (Player, Long)) = {
 	<tr>
 		<td>@player._2</td>
@@ -13,7 +15,7 @@
 	</tr>
 }
 
-@main {
+@main(1) {
 	<div class="hero-unit">
 		<h1>Ranking</h1>
 	</div>	
@@ -35,4 +37,6 @@
 	  	@players.items.zip(1 + players.offset to players.offset + players.items.size).map(row)
 	  </tbody>
 	</table>
+
+	@paginate(players, 5, routes.PlayerController.ranking _)
 }
