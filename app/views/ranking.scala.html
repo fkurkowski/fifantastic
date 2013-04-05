@@ -2,16 +2,24 @@
 
 @import tags._
 
+@header(caption: Any, number: Boolean = true) = {
+	<th class="@if(number){number}">@caption</th>
+}
+
+@value(value: Any, number: Boolean = true) = {
+	<td class="@if(number){number}">@value</th>
+}
+
 @row(player: (Player, Long)) = {
 	<tr>
-		<td>@player._2</td>
-		<td>@player._1.name</td>
-		<td>@player._1.record.wins</td>
-		<td>@player._1.record.draws</td>
-		<td>@player._1.record.losses</td>
-		<td>@player._1.record.goalsScored</td>
-		<td>@player._1.record.goalsConceded</td>
-		<td>@player._1.record.percent</td>
+		@value(player._2, false)
+		@value(player._1.name, false)
+		@value(player._1.record.wins)
+		@value(player._1.record.draws)
+		@value(player._1.record.losses)
+		@value(player._1.record.goalsScored)
+		@value(player._1.record.goalsConceded)
+		@value(player._1.record.percent)
 	</tr>
 }
 
@@ -20,17 +28,17 @@
 		<h1>Ranking</h1>
 	</div>	
 
-	<table class="table table-bordered">
+	<table class="table table-hover table-condensed text-center">
 	  <thead>
 	    <tr>
-	      <th>#</th>
-	      <th>Player</th>
-	      <th>W</th>
-	      <th>D</th>
-	      <th>L</th>
-	      <th>GS</th>
-	      <th>GC</th>
-	      <th>%</th>
+	      @header("#", false)
+	      @header("Player", false)
+	      @header("W")
+	      @header("D")
+	      @header("L")
+	      @header("GS")
+	      @header("GC")
+	      @header("%")
 	    </tr>
 	  </thead>
 	  <tbody>

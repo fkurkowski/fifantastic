@@ -18,9 +18,9 @@
               <a class="brand" href="@routes.Game.list()">FIFAntastic</a>
 
               <ul class="nav">
-                  <li class="@if(nav == 0) {active}"><a href="@routes.Game.list()">Games</a></li>
-                  <li class="@if(nav == 1) {active}"><a href="@routes.PlayerController.ranking()">Ranking</a></li>
-              </ul>
+                  <li class="divider-vertical @if(nav == 0) {active}"><a href="@routes.Game.list()">Games</a></li>
+                  <li class="divider-vertical @if(nav == 1) {active}"><a href="@routes.PlayerController.ranking()">Ranking</a></li>
+              </ul>    
           </div>
         </div>
       </div>

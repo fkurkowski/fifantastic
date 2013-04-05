@@ -1,3 +1,7 @@
+.table .number {
+	text-align: right;
+}
+
 .alert p {
 	margin: 5px 0px 5px;
 }
