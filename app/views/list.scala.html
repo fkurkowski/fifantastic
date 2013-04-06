@@ -2,43 +2,6 @@
 
 @import tags._
 
-@****************************************
-* Match creation helper							    *
-****************************************@
-@create(m: Match) = {
-	<div class="game">
-		<div class="row">
-			<div class="span5 player text-right">
-				<h3 class="@playerClass(m,m.home.player)">@m.home.player.name</h3>
-				<small><em>as</em> @m.home.team.name</small>
-			</div>
-
-			<div class="span2 player text-center">
-				<h1>@m.home.goals x @m.away.goals</h1>
-				<small>@formatDate(m.date)</small>
-			</div>
-
-			<div class="span5 player text-left">
-				<h3 class="@playerClass(m,m.away.player)">@m.away.player.name</h3>
-				<small><em>as</em> @m.away.team.name</small>
-			</div>
-		</div>
-	</div>
-}
-
-@playerClass(m: Match, p: Player) = @{
-	m.winner match {
-		case None => "text-warning" 
-		case Some(winner) if winner == p => "text-success"
-		case _ => "text-error"
-	}
-}
-
-@formatDate(dt: java.util.Date) = @{
-	val format = new java.text.SimpleDateFormat("MMM dd, yyyy")
-	format.format(dt)
-}
-
 @main(0) {
 	<div class="hero-unit">
 		<h1>Fixtures</h1>
@@ -60,10 +23,7 @@
   }
 
 	<div class="container">
-		<div>
-			@matches.items.map(create)
-		</div>
-
+		@games(matches)
 		@paginate(matches, 9, routes.Game.list _)
 	</div>
 }

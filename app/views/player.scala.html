@@ -1,0 +1,37 @@
+@(player: Player, recent: Page[Match], rivals: (Player, Player, Player))
+
+@import tags._
+
+@main(1) {
+	<div class="page-header">
+			<h1 class="float-left">@player.name</h1>
+	</div>
+
+	<div class="row">				
+		<div class="span4 stats">
+			<h4>Statistics</h4>
+			<strong>@(player.record.wins + player.record.draws + player.record.losses)</strong> games<br/>
+			<strong>@player.record.wins</strong> wins<br/>
+			<strong>@player.record.draws</strong> draws<br/>
+			<strong>@player.record.losses</strong> losses<br/>
+		</div>
+
+		<div class="span4 stats align-text">
+			<h4>Rivalries</h4>
+			<span class="label label-important">Nemesis</span> <small>Player</small><br/>
+			<span class="label label-info">Challenger</span> <small>Player</small><br/>
+			<span class="label label-success">Bonus</span> <small>Player</small><br/>
+		</div>
+
+		<div class="span4 stats">
+			<h4>Achievements</h4>
+			<abbr title="Consecutive games won">10 Win Streak </abbr><br/>
+			<abbr title="Scored 10 goals in a game">Top Scorer</abbr><br/>
+		</div>
+	</div>
+
+	<div class="recent">
+		<h4>Recent</h4>
+		@games(recent)
+	</div>
+}

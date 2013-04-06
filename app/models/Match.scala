@@ -73,6 +73,17 @@ object Match {
 		}
 	}
 
+	def findAll: List[Match] = {
+		DB.withConnection { implicit connection =>
+			SQL(
+				"""
+					select * from match
+					order by when desc
+				"""
+			).as(Match.parser *)
+		}
+	}
+
 	def findByPage(page: Int = 1, pageSize: Int = 5): Page[Match] = {
 
 		val offset = pageSize * (page - 1)
@@ -99,14 +110,35 @@ object Match {
 		}
 	}
 
-	def findAll: List[Match] = {
+	def findByPlayerPage(id: Long, page: Int = 1, pageSize: Int = 5): Page[Match] = {
+
+		val offset = pageSize * (page - 1)
+
 		DB.withConnection { implicit connection =>
-			SQL(
+
+			val games = SQL(
 				"""
 					select * from match
+					where home_player_id = {id} OR away_player_id = {id}
 					order by when desc
+					limit {pageSize} offset {offset}
 				"""
+			).on(
+				'id -> id,
+				'pageSize -> pageSize,
+				'offset -> offset
 			).as(Match.parser *)
+
+			val total = SQL(
+				"""
+					select count(*) from match
+					where home_player_id = {id} OR away_player_id = {id}
+				"""
+			).on(
+				'id -> id
+			).as(scalar[Long].single)
+
+			Page(games, page, pageSize, offset, total)
 		}
 	}
 

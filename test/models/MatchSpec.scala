@@ -46,6 +46,20 @@ class MatchSpec extends Specification {
 			}
 		}
 
+		"be found by player page" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val id: Long = 1
+				val page = Match.findByPlayerPage(id, 2, 1)
+				page.items must haveAllElementsLike { 
+					case m => {
+						List(m.home.player.id.get, m.away.player.id.get) must haveOneElementLike {
+							case i => i must_== id
+						}
+					}
+				}
+			}
+		}
+
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val games = Match.findAll

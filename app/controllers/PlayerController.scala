@@ -22,4 +22,11 @@ object PlayerController extends Controller {
 			else
 				Ok(views.html.ranking(Player.findByPage(page, PAGE_SIZE)))
 	}
+
+	def view(id: Long) = Action { implicit request =>
+		Player.findById(id) match {
+			case None => NotFound
+			case Some(p) => Ok(views.html.player(p, Match.findByPlayerPage(id, 1, 3), null))
+		}
+	}
 }
