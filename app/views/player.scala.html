@@ -32,9 +32,7 @@
 		<div class="span4 stats align-text">
 			<h4>Rivalries</h4>
 			
-			@for(r <- rivals) {
-				@rivalry(r)
-			}
+			@rivals.map(rivalry)
 		</div>
 
 		<div class="span4 stats">

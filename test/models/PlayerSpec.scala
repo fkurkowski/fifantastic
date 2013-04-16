@@ -114,5 +114,18 @@ class PlayerSpec extends Specification {
 				record.wins must_== 83
 			}
 		}
+
+		"be updated by result" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val old = Record.findByPlayerId(1).get
+				Record.update(1, Win)
+
+				val updated = Record.findByPlayerId(1).get
+
+				old.wins must_== updated.wins - 1
+				old.draws must_== updated.draws
+				old.losses must_== updated.losses
+			}
+		}
 	}
 }

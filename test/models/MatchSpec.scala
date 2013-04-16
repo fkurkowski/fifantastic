@@ -69,7 +69,9 @@ class MatchSpec extends Specification {
 
 		"be created" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				val id = Match.create(new Date(), 2, 2, 0, 1, 2, 0)
+				val id = Match.create(Match(date = new Date(), 
+					home = PlayerScore(Player.findById(2).get, Team.findById(2).get, 0),
+					away = PlayerScore(Player.findById(1).get, Team.findById(2).get, 0)))
 
 				val Some(game) = Match.findById(id)
 				game.home.player.name must_== "Alfonso Ramos"
@@ -78,6 +80,24 @@ class MatchSpec extends Specification {
 				game.away.player.name must_== "Bruce Grannec"
 				game.away.team.name must startWith("FC Barcelona")
 				game.away.goals must_== 0
+			}
+		}
+
+		"update record after creating" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+
+				val home = Player.findById(1).get
+				val away = Player.findById(2).get
+
+				Match.create(Match(date = new Date(),
+					home = PlayerScore(home, Team.findById(1).get, 1),
+					away = PlayerScore(away, Team.findById(1).get, 0)))
+
+				val nHome = Player.findById(1).get
+				val nAway = Player.findById(2).get
+
+				home.record.wins must_== nHome.record.wins - 1
+				away.record.losses must_== nAway.record.losses - 1
 			}
 		}
 	}

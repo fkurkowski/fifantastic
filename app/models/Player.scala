@@ -25,16 +25,10 @@ case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record) {
 			
 			val opp = if (game.home.player == this) game.away.player
 								else game.home.player
-
-			val result = game.winner match {
-				case Some(p) if p != opp => Win
-				case Some(p) => Loss
-				case None => Draw
-			}
 			
 			val current = map.getOrElse(opp, Record(wins = 0, draws = 0, losses = 0))
 
-			map + (opp -> (current + result))
+			map + (opp -> (current + game.outcome(this)))
 		}.toList sortWith { (e1, e2) =>
 			(e1._2.wins - e1._2.losses > e2._2.wins - e2._2.losses)
 		}
@@ -240,6 +234,28 @@ object Record {
 				'losses -> record.losses,
 				'goals_scored -> record.goalsScored,
 				'goals_conceded -> record.goalsConceded
+			).executeUpdate()
+		}
+	}
+
+	def update(playerId: Long, result: MatchResult) = {
+		DB.withConnection { implicit connection =>
+
+			val wins = if (result == Win) 1 else 0
+			val draws = if (result == Draw) 1 else 0
+			val losses = if (result == Loss) 1 else 0
+
+			SQL(
+				"""
+					update record
+					set wins = wins + {w}, draws = draws + {d}, losses = losses + {l}
+					where player_id = {player_id}
+				"""
+			).on(
+				'player_id -> playerId,
+				'w -> wins,
+				'd -> draws,
+				'l -> losses
 			).executeUpdate()
 		}
 	}

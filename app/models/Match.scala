@@ -15,6 +15,12 @@ case class Match(id: Pk[Long] = NotAssigned, date: Date, home: PlayerScore, away
 		else if (home.goals < away.goals) Some(away.player)
 		else None
 	}
+
+	def outcome(player: Player) = winner match {
+		case Some(p) if p == player => Win
+		case Some(p) => Loss
+		case None => Draw
+	}
 }
 
 case class PlayerScore(player: Player, team: Team, goals: Int)
@@ -147,27 +153,31 @@ object Match {
 		}
 	}
 
-	def create(game: Match): Long = create(game.date, game.home.player.id.get, game.home.team.id.get, game.home.goals,
-			game.away.player.id.get, game.away.team.id.get, game.away.goals)
-
-	def create(date: Date, hp: Long, ht: Long, hg: Int, ap: Long, 
-		at: Long, ag: Int): Long = {
+	def create(game: Match): Long = {
 		DB.withConnection { implicit connection => 
-			SQL(
+
+			val id = SQL(
 				"""
 					insert into match(when, home_player_id, home_team_id,
 						home_goals, away_player_id, away_team_id, away_goals)
 					values({date}, {hp}, {ht}, {hg}, {ap}, {at}, {ag})
 				"""
 			).on(
-				'date -> date,
-				'hp -> hp,
-				'ht -> ht,
-				'hg -> hg,
-				'ap -> ap,
-				'at -> at,
-				'ag -> ag
+				'date -> game.date,
+				'hp -> game.home.player.id.get,
+				'ht -> game.home.team.id.get,
+				'hg -> game.home.goals,
+				'ap -> game.away.player.id.get,
+				'at -> game.away.team.id.get,
+				'ag -> game.away.goals
 			).executeInsert().get
+
+			// Update player records
+			Record.update(game.home.player.id.get, game.outcome(game.home.player))
+			Record.update(game.away.player.id.get, game.outcome(game.away.player))
+
+			// Return game id
+			id
 		}
-	}	
+	}
 }
