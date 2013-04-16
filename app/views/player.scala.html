@@ -1,6 +1,19 @@
-@(player: Player, recent: Page[Match], rivals: (Player, Player, Player))
+@(player: Player, recent: Page[Match], rivals: List[Rivalry])
 
 @import tags._
+
+@rivalry(r: Rivalry) = {
+	@r.name match {
+		case name @ "Nemesis" => { <span class="label label-important">@name</span> }
+		case name => { <span class="label label-success">@name</span> }
+	}
+
+	<small>
+		<a href="@routes.PlayerController.view(r.rival.id.get)">
+			@r.rival.name (@(r.record.wins)-@(r.record.draws)-@(r.record.losses))
+		</a>
+	</small><br/>
+}
 
 @main(1) {
 	<div class="page-header">
@@ -18,15 +31,16 @@
 
 		<div class="span4 stats align-text">
 			<h4>Rivalries</h4>
-			<span class="label label-important">Nemesis</span> <small>Player</small><br/>
-			<span class="label label-info">Challenger</span> <small>Player</small><br/>
-			<span class="label label-success">Bonus</span> <small>Player</small><br/>
+			
+			@for(r <- rivals) {
+				@rivalry(r)
+			}
 		</div>
 
 		<div class="span4 stats">
 			<h4>Achievements</h4>
-			<abbr title="Consecutive games won">10 Win Streak </abbr><br/>
-			<abbr title="Scored 10 goals in a game">Top Scorer</abbr><br/>
+			<!--<abbr title="Consecutive games won">10 Win Streak </abbr><br/>
+			<abbr title="Scored 10 goals in a game">Top Scorer</abbr><br/>-->
 		</div>
 	</div>
 

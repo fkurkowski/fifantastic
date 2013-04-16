@@ -8,12 +8,64 @@ import anorm.SqlParser._
 
 import scala.language.postfixOps
 
-case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record)
+case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record) {
+	/**
+	 * Every player has a serie of rivalries with other players. Each
+	 * of these rivalries has it's own name and specific properties. For
+	 * example, a 'nemesis' rivalry is determined by the player who has
+	 * the biggest (wins-losses) against this player.
+	 *
+   * @return A list containing all rivalries
+	 */
+	def findRivalries(): List[Rivalry] = {
+
+		val matches = Match.findByPlayerId(id.get)
+
+		val byRecord = matches.foldLeft(Map[Player, Record]()) { (map, game) =>
+			
+			val opp = if (game.home.player == this) game.away.player
+								else game.home.player
+
+			val result = game.winner match {
+				case Some(p) if p != opp => Win
+				case Some(p) => Loss
+				case None => Draw
+			}
+			
+			val current = map.getOrElse(opp, Record(wins = 0, draws = 0, losses = 0))
+
+			map + (opp -> (current + result))
+		}.toList sortWith { (e1, e2) =>
+			(e1._2.wins - e1._2.losses > e2._2.wins - e2._2.losses)
+		}
+
+		val nemesis = byRecord.last
+    val bonus = byRecord(0)
+
+    List(
+    	Rivalry("Nemesis", nemesis._1, nemesis._2),
+    	Rivalry("Bonus", bonus._1, bonus._2)
+    )
+	}
+}
+
 case class Record(id: Pk[Long] = NotAssigned, wins: Int, draws: Int, losses: Int, 
-	goalsScored: Int, goalsConceded: Int) {
+	goalsScored: Int = 0, goalsConceded: Int = 0) {
 
 	def percent = "%.1f" format (((wins*3 + draws).toDouble / ((wins+draws+losses)*3)) * 100)
+
+	def + (record: Record) = 
+		Record(id, wins + record.wins, draws + record.draws, losses + record.losses, 
+			goalsScored + record.goalsScored, goalsConceded + record.goalsConceded)
+
+	def + (result: MatchResult) = result match {
+		case Win => Record(id, wins + 1, draws, losses, goalsScored, goalsConceded)
+		case Draw => Record(id, wins, draws + 1, losses, goalsScored, goalsConceded)
+		case Loss => Record(id, wins, draws, losses + 1, goalsScored, goalsConceded)
+	}
 }
+
+case class Rivalry(name: String, rival: Player, record: Record)
 
 object Player {
 	val withRecord = {
@@ -34,17 +86,6 @@ object Player {
 				"""
 			).on('id -> id).as(Player.withRecord.singleOpt)
 		}	
-	}
-
-	def findAll: List[Player] = {
-		DB.withConnection { implicit connection => 
-			SQL(
-				"""
-					select * from player
-					left join record on player.id = record.player_id
-				"""
-			).as(Player.withRecord *)
-		}
 	}
 
 	def findByName(name: String): Option[Player] = {
@@ -93,6 +134,17 @@ object Player {
 			).as(Player.withRecord *)
 
 			Page(players, page, pageSize, offset, Player.count)
+		}
+	}
+
+	def findAll: List[Player] = {
+		DB.withConnection { implicit connection => 
+			SQL(
+				"""
+					select * from player
+					left join record on player.id = record.player_id
+				"""
+			).as(Player.withRecord *)
 		}
 	}
 

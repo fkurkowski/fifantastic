@@ -73,6 +73,20 @@ class PlayerSpec extends Specification {
 				player.record.wins must_== 0
 			}
 		}
+
+		"find rivals" in {
+			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+				val rivalries = Player.findById(4).get.findRivalries
+				rivalries must have size(2)
+
+				val nemesis = rivalries.find(_.name == "Nemesis").get
+				nemesis.rival.name must_== "Daniel Rodriguez"
+				nemesis.record.wins must_== 4
+				nemesis.record.draws must_== 3
+				nemesis.record.losses must_== 11
+
+			}
+		}
 	}
 
 	"Record model" should {

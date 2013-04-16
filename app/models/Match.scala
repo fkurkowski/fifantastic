@@ -19,6 +19,11 @@ case class Match(id: Pk[Long] = NotAssigned, date: Date, home: PlayerScore, away
 
 case class PlayerScore(player: Player, team: Team, goals: Int)
 
+sealed abstract class MatchResult
+object Win extends MatchResult
+object Draw extends MatchResult
+object Loss extends MatchResult
+
 object Match {
 
 	val parser = {

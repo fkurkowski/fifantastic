@@ -10,6 +10,8 @@ object PlayerController extends Controller {
 
 	final val PAGE_SIZE = 10
 
+	type PlayerRecord = (Player, (Int, Int, Int))
+
 	def names(filter: String) = Action {
 		Ok(Json.toJson(
 			Player.findByNameLike("%" + filter + "%").map(_.name)
@@ -26,7 +28,7 @@ object PlayerController extends Controller {
 	def view(id: Long) = Action { implicit request =>
 		Player.findById(id) match {
 			case None => NotFound
-			case Some(p) => Ok(views.html.player(p, Match.findByPlayerPage(id, 1, 3), null))
+			case Some(p) => Ok(views.html.player(p, Match.findByPlayerPage(id, 1, 3), p.findRivalries))
 		}
 	}
 }
