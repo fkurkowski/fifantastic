@@ -10,25 +10,32 @@ import anorm.SqlParser._
 import scala.language.postfixOps
 
 case class Match(id: Pk[Long] = NotAssigned, date: Date, home: PlayerScore, away: PlayerScore) {
-	def winner: Option[Player] = {
-		if (home.goals > away.goals) Some(home.player)
-		else if (home.goals < away.goals) Some(away.player)
+	def winner: Option[PlayerScore] = {
+		if (home.goals > away.goals) Some(home)
+		else if (home.goals < away.goals) Some(away)
 		else None
 	}
 
-	def outcome(player: Player) = winner match {
-		case Some(p) if p == player => Win
-		case Some(p) => Loss
-		case None => Draw
+	def loser: Option[PlayerScore] = winner match {
+		case Some(ps) if ps == home => Some(away)
+		case Some(ps) => Some(home)
+		case None => None
+	}
+
+	def outcome(player: Player) = (winner, loser) match {
+		case (Some(w), Some(l)) if w.player == player => Outcome(Result.Win, w.goals, l.goals)
+		case (Some(w), Some(l)) => Outcome(Result.Loss, l.goals, w.goals)
+		case _ => Outcome(Result.Draw, home.goals, home.goals)
 	}
 }
 
 case class PlayerScore(player: Player, team: Team, goals: Int)
 
-sealed abstract class MatchResult
-object Win extends MatchResult
-object Draw extends MatchResult
-object Loss extends MatchResult
+case class Outcome(result: Result.Value, scored: Int, conceded: Int)
+object Result extends Enumeration {
+    type Result = Value
+    val Win, Draw, Loss = Value
+ }
 
 object Match {
 
@@ -173,8 +180,8 @@ object Match {
 			).executeInsert().get
 
 			// Update player records
-			Record.update(game.home.player.id.get, game.outcome(game.home.player))
-			Record.update(game.away.player.id.get, game.outcome(game.away.player))
+			Player.update(game.home.player.id.get, game.home.player + game.outcome(game.home.player))
+			Player.update(game.away.player.id.get, game.away.player + game.outcome(game.away.player))
 
 			// Return game id
 			id

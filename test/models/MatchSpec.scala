@@ -14,12 +14,10 @@ class MatchSpec extends Specification {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val Some(game) = Match.findById(1)
 				
-				game.home.player.name must_== "Ovidiu Patrascu"
-				game.home.team.name must startWith("Paris Saint-Germain")
-				game.home.goals must_== 0
-				game.away.player.name must_== "Marc Arisa"
-				game.away.team.name must startWith("Ajax")
-				game.away.goals must_== 2
+				game.home.player.name must_== "Alfonso Ramos"
+				game.home.team.name must startWith("Real Madrid")
+				game.away.player.name must_== "Bruce Grannec"
+				game.away.team.name must startWith("Real Madrid")
 			}
 		}
 
@@ -27,14 +25,14 @@ class MatchSpec extends Specification {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val games = Match.findByPlayerId(1)
 				
-				games.size must_== 198
+				games.size must_== 8
 			}
 		}
 
 		"be found by team id" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val games = Match.findByTeamId(1)
-				games.size must_== 18
+				games.size must_== 4
 			}
 		}
 
@@ -63,7 +61,7 @@ class MatchSpec extends Specification {
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val games = Match.findAll
-				games.size must_== 906
+				games.size must_== 25
 			}
 		}
 

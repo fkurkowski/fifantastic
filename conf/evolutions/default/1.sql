@@ -7,19 +7,12 @@ set ignorecase true;
 create table player (
 	id 									bigint not null auto_increment,
 	name								varchar(255) not null,
-	constraint pk_player primary key (id))
-;
-
-create table record (
-	id 									bigint not null auto_increment,
 	wins								int not null,
 	draws								int not null,
 	losses							int not null,
 	goals_scored				int not null,
 	goals_conceded			int not null,
-	player_id 					bigint not null unique,
-	constraint pk_record primary key (id),
-	constraint fk_player foreign key (player_id) references player(id))
+	constraint pk_player primary key (id))
 ;
 
 create table team (
@@ -48,8 +41,6 @@ create table match (
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
-
-drop table if exists record;
 
 drop table if exists player;
 

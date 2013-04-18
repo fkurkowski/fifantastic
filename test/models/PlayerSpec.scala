@@ -66,7 +66,7 @@ class PlayerSpec extends Specification {
 
 		"be created" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				val id = Player.create("Felipe Kurkowski")
+				val id = Player.create(Player(name = "Felipe Kurkowski", record = Record()))
 
 				val Some(player) = Player.findById(id)
 				player.name must_== "Felipe Kurkowski"
@@ -80,51 +80,11 @@ class PlayerSpec extends Specification {
 				rivalries must have size(2)
 
 				val nemesis = rivalries.find(_.name == "Nemesis").get
-				nemesis.rival.name must_== "Daniel Rodriguez"
-				nemesis.record.wins must_== 4
-				nemesis.record.draws must_== 3
-				nemesis.record.losses must_== 11
+				nemesis.rival.name must_== "Ovidiu Patrascu"
+				nemesis.record.wins must_== 0
+				nemesis.record.draws must_== 0
+				nemesis.record.losses must_== 1
 
-			}
-		}
-	}
-
-	"Record model" should {
-
-		"be found by id" in {
-			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				val Some(record) = Record.findById(1)
-				record.wins must_== 82
-			}
-		}
-
-		"be found by player id" in {
-			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				val Some(record) = Record.findByPlayerId(1)
-				record.wins must_== 82
-			}
-		}
-
-		"be updated" in {
-			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				Record.update(1, Record(wins = 83, draws = 11, losses = 4,
-					goalsScored = 192, goalsConceded = 68))
-				
-				val Some(record) = Record.findByPlayerId(1)
-				record.wins must_== 83
-			}
-		}
-
-		"be updated by result" in {
-			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-				val old = Record.findByPlayerId(1).get
-				Record.update(1, Win)
-
-				val updated = Record.findByPlayerId(1).get
-
-				old.wins must_== updated.wins - 1
-				old.draws must_== updated.draws
-				old.losses must_== updated.losses
 			}
 		}
 	}

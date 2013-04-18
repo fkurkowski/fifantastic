@@ -34,7 +34,7 @@
 @playerClass(m: Match, p: Player) = @{
 	m.winner match {
 		case None => "text-warning" 
-		case Some(winner) if winner == p => "text-success"
+		case Some(winner) if winner.player == p => "text-success"
 		case _ => "text-error"
 	}
 }

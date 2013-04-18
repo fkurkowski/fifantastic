@@ -8,7 +8,7 @@ import anorm.SqlParser._
 
 import scala.language.postfixOps
 
-case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record) {
+case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record = Record()) {
 	/**
 	 * Every player has a serie of rivalries with other players. Each
 	 * of these rivalries has it's own name and specific properties. For
@@ -26,36 +26,54 @@ case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record) {
 			val opp = if (game.home.player == this) game.away.player
 								else game.home.player
 			
-			val current = map.getOrElse(opp, Record(wins = 0, draws = 0, losses = 0))
+			val current = map.getOrElse(opp, Record())
 
 			map + (opp -> (current + game.outcome(this)))
 		}.toList sortWith { (e1, e2) =>
 			(e1._2.wins - e1._2.losses > e2._2.wins - e2._2.losses)
 		}
 
-		val nemesis = byRecord.last
+		byRecord match {
+			case head :: Nil => List()
+
+			case head :: tail => List(
+				Rivalry("Nemesis", tail.last._1, tail.last._2),
+				Rivalry("Bonus", head._1, head._2)
+			) 
+
+			case _ => List()
+		}
+		
+
+		/*val nemesis = byRecord.last
     val bonus = byRecord(0)
 
     List(
     	Rivalry("Nemesis", nemesis._1, nemesis._2),
     	Rivalry("Bonus", bonus._1, bonus._2)
-    )
+    )*/
 	}
+
+	def + (outcome: Outcome) = Player(id, name, record + outcome)
 }
 
-case class Record(id: Pk[Long] = NotAssigned, wins: Int, draws: Int, losses: Int, 
+case class Record(wins: Int = 0, draws: Int = 0, losses: Int = 0, 
 	goalsScored: Int = 0, goalsConceded: Int = 0) {
 
-	def percent = "%.1f" format (((wins*3 + draws).toDouble / ((wins+draws+losses)*3)) * 100)
+	def total = wins + draws + losses
 
-	def + (record: Record) = 
-		Record(id, wins + record.wins, draws + record.draws, losses + record.losses, 
-			goalsScored + record.goalsScored, goalsConceded + record.goalsConceded)
+	def percent = "%.1f".format {
+			if (total > 0) ((wins*3 + draws).toDouble / (total*3)) * 100
+			else 0f
+	}
 
-	def + (result: MatchResult) = result match {
-		case Win => Record(id, wins + 1, draws, losses, goalsScored, goalsConceded)
-		case Draw => Record(id, wins, draws + 1, losses, goalsScored, goalsConceded)
-		case Loss => Record(id, wins, draws, losses + 1, goalsScored, goalsConceded)
+	def + (outcome: Outcome) = outcome.result match {
+		case Result.Win => Record(wins + 1, draws, losses, 
+			goalsScored + outcome.scored, goalsConceded + outcome.conceded)
+		case Result.Draw => Record(wins, draws + 1, losses, 
+			goalsScored + outcome.scored, goalsConceded + outcome.conceded)
+		case Result.Loss => Record(wins, draws, losses + 1, 
+			goalsScored + outcome.scored, goalsConceded + outcome.conceded)
 	}
 }
 
@@ -75,7 +93,6 @@ object Player {
 			SQL(
 				"""
 					select * from player 
-					left join record on player.id = record.player_id 
 					where player.id = {id}
 				"""
 			).on('id -> id).as(Player.withRecord.singleOpt)
@@ -87,7 +104,6 @@ object Player {
 			SQL(
 				"""
 					select * from player
-					left join record on player.id = record.player_id
 					where name = {name}
 				"""
 			).on('name -> name).as(Player.withRecord.singleOpt)
@@ -99,7 +115,6 @@ object Player {
 			SQL(
 				"""
 					select * from player
-					left join record on player.id = record.player_id
 					where name like {filter}
 				"""
 			).on('filter -> filter).as(Player.withRecord *)
@@ -118,7 +133,6 @@ object Player {
 						0
 					) as percent
 					from player
-					left join record on player.id = record.player_id
 					order by percent desc
 					limit {pageSize} offset {offset}
 				"""
@@ -136,7 +150,6 @@ object Player {
 			SQL(
 				"""
 					select * from player
-					left join record on player.id = record.player_id
 				"""
 			).as(Player.withRecord *)
 		}
@@ -159,116 +172,52 @@ object Player {
 			SQL(
 				"""
 					update player
-					set name = {name}
+					set name = {name}, wins = {wins}, draws = {draws}, losses = {losses}, 
+						goals_scored = {goalsScored}, goals_conceded = {goalsConceded}
 					where id = {id}
 				"""
 			).on(
 				'id -> id, 
-				'name -> player.name
+				'name -> player.name,
+				'wins -> player.record.wins,
+				'draws -> player.record.draws,
+				'losses -> player.record.losses,
+				'goalsScored -> player.record.goalsScored,
+				'goalsConceded -> player.record.goalsConceded
 			).executeUpdate()
 		}
-
-		Record.update(id, player.record)
 	}
 
-	def create(name: String): Long = {
-		val id = DB.withConnection { implicit connection => 
+	def create(player: Player): Long = {
+		DB.withConnection { implicit connection => 
 			SQL(
 				"""
-					insert into player(name) 
-					values ({name})
+					insert into player(name, wins, draws, losses, 
+						goals_scored, goals_conceded) 
+					values ({name}, {wins}, {draws}, {losses}, 
+						{goalsScored}, {goalsConceded})
 				"""
-			).on('name -> name).executeInsert().get
+			).on(
+				'name -> player.name,
+				'wins -> player.record.wins,
+				'draws -> player.record.draws,
+				'losses -> player.record.losses,
+				'goalsScored -> player.record.goalsScored,
+				'goalsConceded -> player.record.goalsConceded
+			).executeInsert().get
 		}
-
-		Record.create(id)
-		id
 	}
 }
 
-/** 
- * TODO: Apparently, there's no need to keep this in a separate table.
- */
 object Record {
 	val parser = {
-		get[Pk[Long]]("record.id") ~
-		get[Int]("record.wins") ~
-		get[Int]("record.draws") ~
-		get[Int]("record.losses") ~
-		get[Int]("record.goals_scored") ~
-		get[Int]("record.goals_conceded") map {
-			case id~wins~draws~losses~goalsScored~goalsConceded =>
-				Record(id, wins, draws, losses, goalsScored, goalsConceded)
-		}
-	}
-
-	def findById(id: Long): Option[Record] = {
-		DB.withConnection { implicit connection =>
-			SQL("select * from record where id = {id}")
-				.on('id -> id)
-				.as(Record.parser.singleOpt)
-		}
-	}
-
-	def findByPlayerId(playerId: Long): Option[Record] = {
-		DB.withConnection { implicit connection => 
-			SQL("select * from record where player_id = {player_id}")
-				.on('player_id -> playerId)
-				.as(Record.parser.singleOpt)
-		}
-	}
-
-	def update(playerId: Long, record: Record) = {
-		DB.withConnection { implicit connection =>
-			SQL(
-				"""
-					update record
-					set wins = {wins}, draws = {draws}, losses = {losses}, 
-					goals_scored = {goals_scored}, goals_conceded = {goals_conceded}
-					where player_id = {player_id}
-				"""
-			).on(
-				'player_id -> playerId, 
-				'wins -> record.wins,
-				'draws -> record.draws,
-				'losses -> record.losses,
-				'goals_scored -> record.goalsScored,
-				'goals_conceded -> record.goalsConceded
-			).executeUpdate()
-		}
-	}
-
-	def update(playerId: Long, result: MatchResult) = {
-		DB.withConnection { implicit connection =>
-
-			val wins = if (result == Win) 1 else 0
-			val draws = if (result == Draw) 1 else 0
-			val losses = if (result == Loss) 1 else 0
-
-			SQL(
-				"""
-					update record
-					set wins = wins + {w}, draws = draws + {d}, losses = losses + {l}
-					where player_id = {player_id}
-				"""
-			).on(
-				'player_id -> playerId,
-				'w -> wins,
-				'd -> draws,
-				'l -> losses
-			).executeUpdate()
-		}
-	}
-
-	def create(playerId: Long): Long = {
-		DB.withConnection { implicit connection => 
-			SQL(
-				"""
-					insert into record(wins, draws, losses, goals_scored, 
-						goals_conceded, player_id) 
-					values (0, 0, 0, 0, 0, {player_id})
-				"""
-			).on('player_id -> playerId).executeInsert().get
+		get[Int]("player.wins") ~
+		get[Int]("player.draws") ~
+		get[Int]("player.losses") ~
+		get[Int]("player.goals_scored") ~
+		get[Int]("player.goals_conceded") map {
+			case wins~draws~losses~goalsScored~goalsConceded =>
+				Record(wins, draws, losses, goalsScored, goalsConceded)
 		}
 	}
 }
