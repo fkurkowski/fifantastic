@@ -23,10 +23,10 @@
 	<div class="row">				
 		<div class="span4 stats">
 			<h4>Statistics</h4>
-			<strong>@player.record.total</strong> games<br/>
-			<strong>@player.record.wins</strong> wins<br/>
-			<strong>@player.record.draws</strong> draws<br/>
-			<strong>@player.record.losses</strong> losses<br/>
+			<strong>@player.record.total</strong> @Messages("player.games", player.record.total)<br/>
+			<strong>@player.record.wins</strong> @Messages("player.wins", player.record.wins)<br/>
+			<strong>@player.record.draws</strong> @Messages("player.draws", player.record.draws)<br/>
+			<strong>@player.record.losses</strong> @Messages("player.losses", player.record.losses)<br/>
 		</div>
 
 		<div class="span4 stats align-text">
