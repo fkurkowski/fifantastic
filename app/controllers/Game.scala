@@ -5,6 +5,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import java.util.Date
+import scala.util.Random
 
 import anorm._
 import models._
@@ -44,7 +45,18 @@ object Game extends Controller {
   	Ok(views.html.list(Match.findByPage(page)))
   }
 
-  def random = list()
+  def random = Action { implicit request =>
+    val matches = Match.findAll.filter { game =>
+      (game.home.goals - game.away.goals).abs > 3
+    }
+
+    val game = matches match {
+      case Nil => None
+      case x => Some(x(Random.nextInt(x size)))
+    }
+
+    Ok(views.html.memorable(game))
+  }
 
   def save = Action { implicit request =>
   	gameForm.bindFromRequest.fold(

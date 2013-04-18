@@ -2,6 +2,10 @@ body {
 	padding-top: 40px;
 }
 
+section {
+	margin-top: 30px;
+}
+
 .table .number {
 	text-align: right;
 }

@@ -25,7 +25,11 @@
 
 @main(1) {
 	<div class="hero-unit">
-		<h1>Ranking</h1>
+		<h1>Players</h1>
+		<p>Please choose:</p>
+		<a class="btn btn-primary" href="@routes.PlayerController.form">
+			<i class="icon-plus icon-white"></i> Add
+		</a>
 	</div>	
 
 	<table class="table table-hover table-condensed text-center">
@@ -46,5 +50,5 @@
 	  </tbody>
 	</table>
 
-	@paginate(players, 5, routes.PlayerController.ranking _)
+	@paginate(players, 5, routes.PlayerController.list _)
 }

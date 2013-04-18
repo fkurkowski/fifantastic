@@ -1,0 +1,25 @@
+@(game: Option[Match])
+
+@formatDate(dt: java.util.Date) = @{
+	val format = new java.text.SimpleDateFormat()
+	format.format(dt)
+}
+
+@main(0) {
+	<section>
+		@game match {
+			case None => {
+				<h2>Bummer!</h2>
+				<p>A memorable game has yet to be played.</p>
+			}
+
+			case Some(g) => {
+				<h3>@formatDate(g.date)</h3>
+				<p class="lead">
+					The mighty <strong>@g.winner.get.player.name</strong> teaches a lesson to @(g.loser.get.player.name).<br/>
+				</p>
+				As <em>@g.winner.get.team.name and scored</em>, he scored @g.winner.get.goals goals  </br> 
+			}
+		}
+	</section>
+}
