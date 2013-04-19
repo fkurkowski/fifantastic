@@ -4,10 +4,11 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import anorm._
+
 import java.util.Date
 import scala.util.Random
 
-import anorm._
 import models._
 
 object Game extends Controller {
@@ -42,7 +43,7 @@ object Game extends Controller {
 	def index = list()
 
 	def list(page: Int = 1) = Action { implicit request =>
-  	Ok(views.html.list(Match.findByPage(page)))
+  	Ok(views.html.game.list(Match.findByPage(page)))
   }
 
   def random = Action { implicit request =>
@@ -55,13 +56,13 @@ object Game extends Controller {
       case x => Some(x(Random.nextInt(x size)))
     }
 
-    Ok(views.html.memorable(game))
+    Ok(views.html.game.memorable(game))
   }
 
   def save = Action { implicit request =>
   	gameForm.bindFromRequest.fold(
   		formWithErrors => {
-        BadRequest(views.html.form(formWithErrors))
+        BadRequest(views.html.game.create(formWithErrors))
       }, 
   		game => {
   			Match.create(game)
@@ -70,8 +71,8 @@ object Game extends Controller {
   	)
   }
 
-  def form = Action { implicit request => 
-  	Ok(views.html.form(gameForm))
+  def create = Action { implicit request => 
+  	Ok(views.html.game.create(gameForm))
   }
 
 }
