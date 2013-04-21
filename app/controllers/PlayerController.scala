@@ -36,7 +36,16 @@ object PlayerController extends Controller {
   }
 
 	def save = Action { implicit request =>
-		Redirect(routes.PlayerController.list())
+		playerForm.bindFromRequest.fold(
+  		formWithErrors => {
+        BadRequest(views.html.player.create(formWithErrors))
+      }, 
+  		player => {
+  			Player.create(player)
+  			Redirect(routes.PlayerController.list())
+  				.flashing("success" -> "Player %s has been added".format(player.name))
+  		}
+  	)
 	}
 
 

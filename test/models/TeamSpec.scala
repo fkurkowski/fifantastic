@@ -34,7 +34,7 @@ class TeamSpec extends Specification {
 		"find all" in {
 			running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 				val all = Team.findAll
-				all.size must_== 574
+				all.size must_== 575
 			}
 		}
 

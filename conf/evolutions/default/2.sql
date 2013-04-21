@@ -562,19 +562,20 @@ insert into team(id, name) values(558, 'Northern Ireland');
 insert into team(id, name) values(559, 'Norway');
 insert into team(id, name) values(560, 'Paraguay');
 insert into team(id, name) values(561, 'Peru');
-insert into team(id, name) values(562, 'Poland P');
-insert into team(id, name) values(563, 'ortugal');
-insert into team(id, name) values(564, 'Romania Russia');
-insert into team(id, name) values(565, 'Scotland');
-insert into team(id, name) values(566, 'Slovenia');
-insert into team(id, name) values(567, 'South Africa');
-insert into team(id, name) values(568, 'Spain');
-insert into team(id, name) values(569, 'Sweden');
-insert into team(id, name) values(570, 'Switzerland');
-insert into team(id, name) values(571, 'Turkey');
-insert into team(id, name) values(572, 'United States');
-insert into team(id, name) values(573, 'Uruguay');
-insert into team(id, name) values(574, 'Venezuela');
+insert into team(id, name) values(562, 'Poland');
+insert into team(id, name) values(563, 'Portugal');
+insert into team(id, name) values(564, 'Romania');
+insert into team(id, name) values(565, 'Russia');
+insert into team(id, name) values(566, 'Scotland');
+insert into team(id, name) values(567, 'Slovenia');
+insert into team(id, name) values(568, 'South Africa');
+insert into team(id, name) values(569, 'Spain');
+insert into team(id, name) values(570, 'Sweden');
+insert into team(id, name) values(571, 'Switzerland');
+insert into team(id, name) values(572, 'Turkey');
+insert into team(id, name) values(573, 'United States');
+insert into team(id, name) values(574, 'Uruguay');
+insert into team(id, name) values(575, 'Venezuela');
 
 
 

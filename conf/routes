@@ -6,17 +6,19 @@
 GET     /                           controllers.Game.index
 
 GET 		/games											controllers.Game.list(page: Int ?= 1)
-GET     /games/new									controllers.Game.form
+GET     /games/new									controllers.Game.create
 POST    /games               		   	controllers.Game.save
 GET     /games/random								controllers.Game.random
 
 # Players
+GET			/players/names							controllers.PlayerController.names(query: String ?= "")
+
 GET			/players										controllers.PlayerController.list(page: Int ?= 1)
-GET			/players/new								controllers.PlayerController.form
+GET			/players/new								controllers.PlayerController.create
 POST 		/players 										controllers.PlayerController.save
 GET			/players/:id 								controllers.PlayerController.view(id: Long)
 
-GET			/players/names							controllers.PlayerController.names(query: String ?= "")
+
 
 
 # Teams

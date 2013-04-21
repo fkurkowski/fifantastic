@@ -1,4 +1,4 @@
-@(players: Page[Player])
+@(players: Page[Player])(implicit flash: play.api.mvc.Flash)
 
 @import tags._
 
@@ -31,6 +31,8 @@
 			<i class="icon-plus icon-white"></i> Add
 		</a>
 	</div>	
+
+	@done(flash)
 
 	<table class="table table-hover table-condensed text-center">
 	  <thead>
