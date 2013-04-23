@@ -18,7 +18,7 @@ object PlayerController extends Controller {
   val playerForm = Form(
   	mapping(
   		"id" -> ignored(NotAssigned: Pk[Long]),
-  		"name" -> nonEmptyText,
+  		"name" -> nonEmptyText.verifying("player.exists", name => Player.findByName(name) == None),
   		"email" -> email
   	)((id, name, email) => Player(id, name, Record()))
   	(player => Some(player.id, player.name, "email"))

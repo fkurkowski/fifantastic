@@ -12,7 +12,7 @@ entity.not.found=Entity not found
 player.different=Players must be different
 game=Game
 
-
+player.exists=Player already exists
 player.games={0,choice,0#games|1#game|1<games}
 player.wins={0,choice,0#wins|1#win|1<wins}
 player.draws={0,choice,0#draws|1#draw|1<draws}
