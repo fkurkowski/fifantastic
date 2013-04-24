@@ -133,7 +133,8 @@ object Player {
 						0
 					) as percent
 					from player
-					order by percent desc
+					order by percent desc, wins desc, (goals_scored - goals_conceded) desc, 
+									 name
 					limit {pageSize} offset {offset}
 				"""
 			).on(
