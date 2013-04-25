@@ -13,13 +13,8 @@ import models._
 
 object Game extends Controller {
 
-  implicit def validate[A](entity: Option[A]): Boolean = entity match {
-    case Some(_) => true
-    case None => false
-  }
-
-  def exists[A](lookup: String => Option[A])(implicit opt: Option[A] => Boolean) = 
-    nonEmptyText.verifying("entity.not.found", name => opt(lookup(name)))
+  def exists[A](lookup: String => Option[A]) =
+    nonEmptyText.verifying("entity.not.found", name => lookup(name) != None)
 
   val scoreMapping = mapping(
         "player" -> exists(Player.findByName),
@@ -48,12 +43,12 @@ object Game extends Controller {
 
   def random = Action { implicit request =>
     val matches = Match.findAll.filter { game =>
-      (game.home.goals - game.away.goals).abs > 3
+      (game.home.goals - game.away.goals).abs >= 3
     }
 
     val game = matches match {
       case Nil => None
-      case x => Some(x(Random.nextInt(x size)))
+      case x => Some(x(Random.nextInt(x.length)))
     }
 
     Ok(views.html.game.memorable(game))
