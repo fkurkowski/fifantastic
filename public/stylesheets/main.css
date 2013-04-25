@@ -1,3 +1,7 @@
+/**
+ * General
+ */
+
 body {
 	padding-top: 40px;
 }
@@ -6,50 +10,33 @@ section {
 	margin-top: 30px;
 }
 
-.memorable {
+.highlight {
 	padding-top: 60px;
 	padding-bottom: 40px;
 }
 
-.gap {
+.featured {
 	line-height: 30px;
 	font-size: 30px;
 	font-weight: 200;
-
-	margin-left: 200px
 }
 
-.gap-row {
-	padding: 20px 20px 20px 20px;
-	border-top: 1px solid #eeeeee;
+.right-rounded {
+	border: 1px solid #eeeeee;
+	border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
-.teams {
+.left-rounded {
 	border: 1px solid #eeeeee;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   border-right-style: none;
-  width: 480px
 }
 
-.results {
-	border: 1px solid #eeeeee;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.gap-row:first-child {
-	border-style: none;
-}
-
-.table .number {
-	text-align: right;
-}
-
-.alert p {
-	margin: 5px 0px 5px;
-}
-
+/**
+ * Fixtures
+ */
 .game {
 	padding-bottom: 20px;
 	padding-top: 10px;
@@ -60,25 +47,29 @@ section {
 	border-style: none;
 }
 
-.player h3 {
+.game h3, .game h1 {
 	margin-bottom: 0px;
 }
 
-.player h1 {
-	margin-bottom: 0px;
+/**
+ * Match form
+ */
+.alert p {
+	margin: 5px 0px 5px;
 }
 
-.versus {
-	margin-top: 121px;
-	margin-left: 20px;
-	margin-right: 20px;
-	width: 10px;
+.sc-info, .sc-score, .versus {
 	float: left;
 }
 
 .sc-info {
-	float: left;
-	width: 353px;
+	padding-right: 20px;
+	padding-left: 0px;
+}
+
+.sc-info:last-child {
+	padding-right: 0px;
+	padding-left: 20px;
 }
 
 .sc-info input[type="text"] {
@@ -87,27 +78,51 @@ section {
 	font-size: 18px;
 }
 
-.sc-score {
-	float: left;
-	height: 80px;
-	padding-right: 20px;
-	padding-left: 0px;
-}
-
-.sc-score:last-child {
-	padding-left: 20px;
-	padding-right: 0px;
-}
-
 .sc-score input[type="text"] {
-	height: 80px;
+	height: 90px;
 	width: 50px;
 	font-size: 50px;
 	padding-left: 20px;
 	padding-right: 0px;
 }
 
-/*Player view*/
+.versus {
+	margin-top: 131px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+
+/**
+ * Memorable
+ */
+.memorable {
+	width: 540px;
+	margin: 0px auto;
+}
+
+.teams {
+  width: 480px;
+}
+
+.team-row {
+	padding: 20px 20px 20px 20px;
+	border-top: 1px solid #eeeeee;
+}
+
+.team-row:first-child {
+	border-style: none;
+}
+
+/**
+ * Rankings
+ */
+.table .number {
+	text-align: right;
+}
+
+/**
+ * Player view
+ */
 
 .stats a {
 	color: inherit;

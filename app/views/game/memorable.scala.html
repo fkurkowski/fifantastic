@@ -13,7 +13,7 @@
 		}
 
 		case Some(g) => {
-			<div class="text-center memorable">
+			<div class="text-center highlight">
 				<h1>@formatDate(g.date)</h1>
 
 				<p class="lead">
@@ -21,15 +21,15 @@
 				</p>
 			</div>
 
-			<div class="gap">
-				<div class="teams pull-left">
-					<div class="gap-row winner">@g.winner.get.team.name</div>
-					<div class="gap-row loser">@g.loser.get.team.name</div>
+			<div class="memorable featured">
+				<div class="teams left-rounded pull-left">
+					<div class="team-row winner">@g.winner.get.team.name</div>
+					<div class="team-row loser">@g.loser.get.team.name</div>
 				</div>
 
-				<div class="results pull-left">
-					<div class="gap-row winner">@g.winner.get.goals</div>
-					<div class="gap-row loser">@g.loser.get.goals</div>
+				<div class="right-rounded pull-left">
+					<div class="team-row winner">@g.winner.get.goals</div>
+					<div class="team-row loser">@g.loser.get.goals</div>
 				</div>
 			</div>
 		}

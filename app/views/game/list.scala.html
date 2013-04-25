@@ -15,9 +15,6 @@
 	</div>
 
 	@done(flash)
-
-	<div class="container">
-		@games(matches)
-		@paginate(matches, 9, routes.Game.list _)
-	</div>
+	@games(matches)
+	@paginate(matches, 9, routes.Game.list _)
 }

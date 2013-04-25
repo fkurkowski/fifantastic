@@ -6,7 +6,7 @@
 @create(m: Match) = {
 	<div class="game">
 		<div class="row">
-			<div class="span5 player text-right">
+			<div class="span5 text-right">
 				<a href="@routes.PlayerController.view(m.home.player.id.get)">
 					<h3 class="@playerClass(m,m.home.player)">@m.home.player.name</h3>
 				</a>
@@ -14,12 +14,12 @@
 				<small><em>as</em> @m.home.team.name</small>
 			</div>
 
-			<div class="span2 player text-center">
+			<div class="span2 text-center">
 				<h1>@m.home.goals x @m.away.goals</h1>
 				<small>@formatDate(m.date)</small>
 			</div>
 
-			<div class="span5 player text-left">
+			<div class="span5 text-left">
 				
 				<a href="@routes.PlayerController.view(m.away.player.id.get)">
 					<h3 class="@playerClass(m,m.away.player)">@m.away.player.name</h3>
