@@ -19,7 +19,7 @@
 		@value(player._1.record.losses)
 		@value(player._1.record.goalsScored)
 		@value(player._1.record.goalsConceded)
-		@value(player._1.record.percent)
+		@value("%.1f".format(player._1.record.percent))
 	</tr>
 }
 

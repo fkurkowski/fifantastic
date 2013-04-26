@@ -9,6 +9,20 @@ import anorm.SqlParser._
 import scala.language.postfixOps
 
 case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record = Record()) {
+
+	/**
+	 * Custom ordering so we can find the min/max rival in linear time
+	 * rather than nlog(n).
+	 */
+	implicit object RivalOrdering extends Ordering[(Player, Record)] {
+		def compare(x: (Player, Record), y: (Player, Record)) = {
+			val cmp = x._2.percent.compare(y._2.percent)
+
+			if (cmp == 0) x._2.wins.compare(y._2.wins)
+			else cmp
+		}
+	}
+
 	/**
 	 * Every player has a serie of rivalries with other players. Each
 	 * of these rivalries has it's own name and specific properties. For
@@ -17,41 +31,29 @@ case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record = Rec
 	 *
    * @return A list containing all rivalries
 	 */
-	def findRivalries(): List[Rivalry] = {
+	def findRivalries() = {
 
 		val matches = Match.findByPlayerId(id.get)
-
 		val byRecord = matches.foldLeft(Map[Player, Record]()) { (map, game) =>
 			
 			val opp = if (game.home.player == this) game.away.player
 								else game.home.player
 			
 			val current = map.getOrElse(opp, Record())
-
 			map + (opp -> (current + game.outcome(this)))
-		}.toList sortWith { (e1, e2) =>
-			(e1._2.wins - e1._2.losses > e2._2.wins - e2._2.losses)
 		}
 
-		byRecord match {
-			case head :: Nil => List()
+		val rivalries = scala.collection.mutable.MutableList[Rivalry]()
 
-			case head :: tail => List(
-				Rivalry("Nemesis", tail.last._1, tail.last._2),
-				Rivalry("Bonus", head._1, head._2)
-			) 
+		if (byRecord.size > 0) {
+			val min = byRecord.min
+			val max = byRecord.max
 
-			case _ => List()
+			if (min._2.percent <= 50f) rivalries += Rivalry("Nemesis", min._1, min._2)
+			if (max._2.percent > 50f) rivalries += Rivalry("Bonus", max._1, max._2)
 		}
-		
 
-		/*val nemesis = byRecord.last
-    val bonus = byRecord(0)
-
-    List(
-    	Rivalry("Nemesis", nemesis._1, nemesis._2),
-    	Rivalry("Bonus", bonus._1, bonus._2)
-    )*/
+		rivalries
 	}
 
 	def + (outcome: Outcome) = Player(id, name, record + outcome)
@@ -62,9 +64,9 @@ case class Record(wins: Int = 0, draws: Int = 0, losses: Int = 0,
 
 	def total = wins + draws + losses
 
-	def percent = "%.1f".format {
-			if (total > 0) ((wins*3 + draws).toDouble / (total*3)) * 100
-			else 0f
+	def percent = {
+		if (total > 0) ((wins*3 + draws).toDouble / (total*3)) * 100
+		else 0f
 	}
 
 	def + (outcome: Outcome) = outcome.result match {
@@ -78,7 +80,6 @@ case class Record(wins: Int = 0, draws: Int = 0, losses: Int = 0,
 }
 
 case class Rivalry(name: String, rival: Player, record: Record)
-
 object Player {
 	val withRecord = {
 		get[Pk[Long]]("player.id") ~
