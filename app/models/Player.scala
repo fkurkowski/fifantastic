@@ -16,10 +16,10 @@ case class Player(id: Pk[Long] = NotAssigned, name: String, record: Record = Rec
 	 */
 	implicit object RivalOrdering extends Ordering[(Player, Record)] {
 		def compare(x: (Player, Record), y: (Player, Record)) = {
-			val cmp = x._2.percent.compare(y._2.percent)
-
-			if (cmp == 0) x._2.wins.compare(y._2.wins)
-			else cmp
+			x._2.percent.compare(y._2.percent) match {
+				case 0 => x._2.wins.compare(y._2.wins)
+				case n => n
+			}
 		}
 	}
 
