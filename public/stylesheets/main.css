@@ -113,6 +113,10 @@ section {
 	border-style: none;
 }
 
+.refresh {
+	margin-top: 20px;
+}
+
 /**
  * Rankings
  */
