@@ -27,13 +27,6 @@ object Team {
 		}	
 	}
 
-	def findAll: List[Team] = {
-		DB.withConnection { implicit connection =>
-			SQL("select * from team")
-				.as(Team.parser *)
-		}
-	}
-
 	def findByName(name: String): Option[Team] = {
 		DB.withConnection { implicit connection => 
 			SQL(
@@ -56,6 +49,12 @@ object Team {
 		}
 	}
 
+	def findAll: List[Team] = {
+		DB.withConnection { implicit connection =>
+			SQL("select * from team")
+				.as(Team.parser *)
+		}
+	}
 
 	def update(id: Long, team: Team) = {
 		DB.withConnection { implicit connection =>
